@@ -1,2 +1,0 @@
-/usr/bin/ar qc libLibYamlDB.a  CMakeFiles/LibYamlDB.dir/library.c.o
-/usr/bin/ranlib libLibYamlDB.a

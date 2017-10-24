@@ -3,5 +3,5 @@ project(LibYamlDB)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES library.c library.h)
-add_library(LibYamlDB ${SOURCE_FILES})
+set(SOURCE_FILES database.c database.h table.h table.c table.h attribut.c attribut.h attributType.h)
+add_library(YamlDB ${SOURCE_FILES} database.c database.h table.h table.c table.h attribut.c attribut.h attributType.h)
