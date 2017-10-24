@@ -1,0 +1,12 @@
+attributes:
+    prenom: char*
+    nom: char*
+    age: int
+    sexe: char
+    pays: char*
+
+occurences:
+    - [francois, basset, 20, m]
+    - [donald, duck, 30, m]
+    - [mickey, mouse, 20, m]
+    - [louis, de funès, 50, m]
