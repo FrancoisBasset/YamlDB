@@ -1,0 +1,3 @@
+/home/francois/Documents/YamlDB/LibYamlDB/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/francois/Documents/YamlDB/LibYamlDB/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/francois/Documents/YamlDB/LibYamlDB/cmake-build-debug/CMakeFiles/LibYamlDB.dir

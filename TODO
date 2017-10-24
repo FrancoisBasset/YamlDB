@@ -1,0 +1,11 @@
+Idées:
+
+Fichier .yaml: <nom de la base>.<nom de la table>.yaml
+
+Le nom de la base et de la table ne pourront pas avoir de point.
+
+GTK -> Outil pencil pour prototypage d'interface
+
+Outil: CLion, Valgrind
+
+Créer une librairie statique LibYamlDb pour les 4 parties

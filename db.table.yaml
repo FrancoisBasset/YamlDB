@@ -3,7 +3,6 @@ attributes:
     nom: char*
     age: int
     sexe: char
-    pays: char*
 
 occurences:
     - [francois, basset, 20, m]
