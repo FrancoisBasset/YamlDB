@@ -3,12 +3,15 @@
 
 #include "database.h"
 
+/*
+ * Create .yaml file and return a Database
+ */
 Database* newDatabase(char* name) {
     if (name == NULL) {
         return NULL;
     }
 
-    int sizeFileTitle = strlen(name) + 5;
+    int sizeFileTitle = (int) strlen(name) + 5;
 
     char* fileName = malloc(sizeof(char) * sizeFileTitle);
 
@@ -20,29 +23,56 @@ Database* newDatabase(char* name) {
     if (fileCheck != NULL) {
         fclose(fileCheck);
         free(fileName);
-        return  NULL;
+        return NULL;
     }
 
     Database* database = malloc(sizeof(Database));
     database->lengthTables = 0;
     database->file = fopen(fileName, "w");
 
-    writeNewDatabase(database);
+    if (!writeNewDatabase(database)) {
+        return NULL;
+    }
+
+    return database;
 }
 
 int writeNewDatabase(Database* database) {
     if (database == NULL) {
-        return -1;
+        return 0;
     }
 
     fputs("    tables:\n", database->file);
 
-    return 0;
+    return 1;
+}
+
+Database* openDatabase(char* name) {
+    if (name == NULL) {
+        return NULL;
+    }
+
+    int sizeFileName = (int) strlen(name) + 5;
+
+    char *fileName = malloc(sizeof(char) * sizeFileName);
+
+    FILE* file = fopen(fileName, "r");
+
+    if (file == NULL) {
+        free(fileName);
+        return NULL;
+    }
+
+    Database* database = malloc(sizeof(Database));
+
+    database->file = file;
+
+    return database;
 }
 
 int freeDatabase(Database* database) {
     if (database == NULL) {
-        return -1;
+        return 0;
     }
 
     fclose(database->file);
@@ -50,10 +80,10 @@ int freeDatabase(Database* database) {
     int i;
 
     for (i = 0; i < database->lengthTables; i++) {
-        freeTable(database->tables[i]);
+        //freeTable(database->tables[i]);
     }
 
     free(database);
 
-    return 0;
+    return 1;
 }

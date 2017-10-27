@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "database.h"
+
 #include "attribut.h"
 
 typedef struct Table {
@@ -12,9 +12,11 @@ typedef struct Table {
     Attribut* attributes;
 } Table;
 
+#include "database.h"
+
 Table* newTable(char* name, Attribut* attributes);
 
-void freeTable(Table* table);
+//void freeTable(Table* table);
 void destroyTable(Database* database, Table* table);
 
 #endif

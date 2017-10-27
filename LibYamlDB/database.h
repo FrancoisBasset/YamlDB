@@ -18,7 +18,7 @@ Database* newDatabase(char* name);
 int writeNewDatabase(Database* database);
 
 Database* openDatabase(char* name);
-char** getTablesNames(Database* database);
+int setTables(Database* database);
 
 void addNewTable(Database* database, Table* table);
 
