@@ -1,8 +1,8 @@
 attributes:
-    prenom: char*
-    nom: char*
-    age: int
-    sexe: char
+    prenom: 4
+    nom: 4
+    age: 2
+    sexe: 1
 
 occurences:
     - [francois, basset, 20, m]

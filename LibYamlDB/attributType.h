@@ -8,4 +8,6 @@ typedef enum AttributType {
     String
 } AttributType;
 
+char* attributTypeGet(AttributType type);
+
 #endif

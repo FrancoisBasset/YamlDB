@@ -11,3 +11,29 @@ Outil: CLion, Valgrind
 Créer une librairie statique LibYamlDb pour les 4 parties
 
 CLion -> Clic droit sur le projet pour générer projet Cmake
+
+
+
+Créer la base de données:
+	databaseNew :DONE
+	databaseWriteNew :DONE
+
+
+Utiliser la base de données:
+	databaseOpen:
+	databaseSetTables:
+
+Ajouter une table:
+	
+
+
+Supprimer une table:
+
+
+Supprimer une baes de données:
+
+
+
+Quitter:
+	freeDatabase
+	freeTable

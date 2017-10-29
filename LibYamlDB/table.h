@@ -3,20 +3,22 @@
 
 #include <stdio.h>
 
-
 #include "attribut.h"
 
 typedef struct Table {
     FILE* file;
     char* name;
-    Attribut* attributes;
+    int lengthAttributes;
+    Attribut** attributes;
 } Table;
 
 #include "database.h"
 
-Table* newTable(char* name, Attribut* attributes);
+Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut** attributes);
+void tableWriteAttributes(Table* table);
 
-//void freeTable(Table* table);
-void destroyTable(Database* database, Table* table);
+void tableFree(Table* table);
+void tableDelete(Database* database, Table* table);
+void tableDeleteFile(Database* database, Table* table);
 
 #endif

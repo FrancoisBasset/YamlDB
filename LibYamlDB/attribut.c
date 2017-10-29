@@ -3,12 +3,14 @@
 
 #include "attribut.h"
 
-Attribut* newAttribut(char* name, enum AttributType type) {
+Attribut* attributNew(char* name, AttributType type) {
     Attribut* attribut = malloc(sizeof(Attribut));
 
-    attribut->name = malloc(sizeof(char) * 2);
-    strcpy(attribut->name, "r");
-    attribut->type = Int;
+    int sizeName = strlen(name) + 1;
+
+    attribut->name = malloc(sizeof(char) * sizeName);
+    strcpy(attribut->name, name);
+    attribut->type = type;
 
     return attribut;
 }

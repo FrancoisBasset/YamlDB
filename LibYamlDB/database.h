@@ -8,21 +8,25 @@ typedef struct Database Database;
 #include "table.h"
 
 struct Database {
+    char* name;
     FILE* file;
     Table** tables;
     int lengthTables;
+    int capacityTables;
 };
 
+int fileExists(char* fileName);
 
-Database* newDatabase(char* name);
-int writeNewDatabase(Database* database);
+Database* databaseNew(char* name);
+int databaseWriteNew(Database* database, char* fileName);
 
-Database* openDatabase(char* name);
-int setTables(Database* database);
+Database* databaseOpen(char* name);
+int databaseSetTables(Database* database);
 
-void addNewTable(Database* database, Table* table);
+void databaseAddNewTable(Database* database, Table* table);
+void databaseDeleteTable(Database* database, Table* table);
 
-int freeDatabase(Database* database);
-void destroyDatabase(Database* database);
+int databaseFree(Database* database);
+int databaseDelete(Database* database);
 
 #endif
