@@ -12,7 +12,7 @@ Database* databaseNew(char* name) {
         return NULL;
     }
 
-    char* fileName = malloc(sizeof(char) * ((int) strlen(name) + 6));
+    char* fileName = malloc(sizeof(char) * (strlen(name) + 6));
     sprintf(fileName, "%s.yaml", name);
 
     FILE* fileCheck = fopen(fileName, "r");
@@ -30,8 +30,10 @@ Database* databaseNew(char* name) {
 
     database->lengthTables = 0;
     database->capacityTables = 5;
+    database->tables = malloc(sizeof(Table) * database->capacityTables);
 
     if (!databaseWriteNew(database, fileName)) {
+        free(fileName);
         return NULL;
     }
 
@@ -67,13 +69,13 @@ Database* databaseOpen(char* name) {
         return NULL;
     }
 
-    char *fileName = malloc(sizeof(char) * ((int) strlen(name) + 6));
+    char *fileName = malloc(sizeof(char) * (strlen(name) + 6));
     sprintf(fileName, "%s.yaml", name);
 
     FILE* file = fopen(fileName, "r");
+    free(fileName);
 
     if (file == NULL) {
-        free(fileName);
         return NULL;
     }
 
@@ -94,6 +96,10 @@ Database* databaseOpen(char* name) {
  * Retrieve tables
  */
 int databaseSetTables(Database* database) {
+    database->lengthTables = 0;
+    database->capacityTables = database->lengthTables + 5;
+    database->tables = malloc(sizeof(Table) * database->capacityTables);
+
     return 1;
 }
 
@@ -161,7 +167,7 @@ void databaseAddNewTable(Database* database, Table* table) {
         database->tables = tables;
     } else {
         Table* newTable = malloc(sizeof(Table));
-        newTable->name = malloc(sizeof(char) * ((int)strlen(table->name) + 1));
+        newTable->name = malloc(sizeof(char) * (strlen(table->name) + 1));
         strcpy(newTable->name, table->name);
 
         newTable->file = table->file;
@@ -170,8 +176,11 @@ void databaseAddNewTable(Database* database, Table* table) {
         database->lengthTables++;
     }
 
-    char *line = malloc(sizeof(char) * ((int)strlen(table->name) + 8));
+    char *line = malloc(sizeof(char) * (strlen(table->name) + 8));
     sprintf(line, "    - %s", table->name);
 
     fputs(line, database->file);
+    free(line);
+
+    tableWriteAttributes(table);
 }

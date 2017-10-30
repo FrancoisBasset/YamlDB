@@ -25,9 +25,12 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
     Table* table = malloc(sizeof(Table));
 
     table->file = fopen(fileName, "w");
+    free(fileName);
 
     table->name = malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(table->name, name);
+
+    printf("%s", table->name);
 
     table->attributes = malloc(sizeof(Attribut) * lengthAttributes);
     table->lengthAttributes = lengthAttributes;
@@ -36,7 +39,7 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
 
     for (i = 0; i < lengthAttributes; i++) {
         table->attributes[i] = malloc(sizeof(Attribut));
-        table->attributes[i]->name = malloc(sizeof(char) * ((int)strlen(attributes[i]->name) + 1));
+        table->attributes[i]->name = malloc(sizeof(char) * (strlen(attributes[i]->name) + 1));
         strcpy(table->attributes[i]->name, attributes[i]->name);
         table->attributes[i]->type = attributes[i]->type;
     }
@@ -53,7 +56,7 @@ void tableWriteAttributes(Table* table) {
     int i;
 
     for (i = 0; i < table->lengthAttributes; i++) {
-        char* line = malloc(sizeof(char) * ((int)strlen(table->attributes[i]->name) + 8));
+        char* line = malloc(sizeof(char) * (strlen(table->attributes[i]->name) + 8));
         sprintf(line, "    %s: %d", table->attributes[i]->name, table->attributes[i]->type);
         fputs(line, table->file);
         free(line);
