@@ -3,17 +3,19 @@
 #include <string.h>
 
 #include "../LibYamlDB/database.h"
-#include "../LibYamlDB/attribut.h"
 
 void menu(char* databaseName, int baseOpened);
 Database* mainNewDatabase(int* baseOpened);
 Database* mainOpenDatabase(int* baseOpened);
+void mainDeleteDatabase(Database* database, int* baseOpened);
 void mainDatabaseAddNewTable(Database* database);
 
 int main() {
     int baseOpened = 0;
     int choice = -1;
     Database* db = NULL;
+
+    system("clear");
 
     while (choice != 6) {
         if (baseOpened == 0) {
@@ -25,6 +27,8 @@ int main() {
         printf("Choix : ");
         scanf("%d", &choice);
 
+        system("clear");
+
         switch (choice) {
             case 1:
                 databaseFree(db);
@@ -35,17 +39,18 @@ int main() {
                 db = mainOpenDatabase(&baseOpened);
                 break;
             case 3:
-                databaseDelete(db);
+                mainDeleteDatabase(db, &baseOpened);
                 break;
             case 4:
+                //todo FONCTIONNE PAS
                 mainDatabaseAddNewTable(db);
                 break;
         }
-
-        printf("\n\n");
     }
 
-    databaseFree(db);
+    if (baseOpened) {
+        databaseFree(db);
+    }
 
     return 0;
 }
@@ -71,7 +76,9 @@ Database* mainNewDatabase(int* baseOpened) {
 Database* mainOpenDatabase(int* baseOpened) {
     char dbName[50];
 
-    printf("Nom de la base de données : ");
+    printf("Liste des bases de données :\n");
+    system("basename -a -s .yaml *.yaml");
+    printf("Nom de la base de données à ouvrir: ");
     scanf("%s", dbName);
 
     Database* db = databaseOpen(dbName);
@@ -84,6 +91,23 @@ Database* mainOpenDatabase(int* baseOpened) {
     }
 
     return db;
+}
+
+void mainDeleteDatabase(Database* database, int* baseOpened) {
+    if (!*baseOpened) {
+        char databaseName[50];
+
+        printf("Liste des bases de données :\n");
+        system("basename -a -s .yaml *.yaml");
+        printf("Nom de la base de données à supprimer: ");
+        scanf("%s", databaseName);
+
+        Database* toDelete = databaseOpen(databaseName);
+        databaseDelete(toDelete);
+    } else {
+        *baseOpened = 0;
+        databaseDelete(database);
+    }
 }
 
 void mainDatabaseAddNewTable(Database* database) {
@@ -130,9 +154,9 @@ void menu(char* databaseName, int baseOpened) {
     }
     printf("1- Nouvelle base de données\n");
     printf("2- Ouvrir une base de données\n");
+    printf("3- Detruire la base de donnees\n");
 
     if (baseOpened) {
-        printf("3- Detruire la base de donnees\n");
         printf("4- Ajouter une table\n");
         printf("5- Supprimer une table\n");
     }

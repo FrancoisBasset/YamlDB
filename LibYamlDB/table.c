@@ -17,7 +17,7 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
 
     FILE *file = fopen(fileName, "r");
 
-    if (file == NULL) {
+    if (file != NULL) {
         free(fileName);
         return NULL;
     }
@@ -29,8 +29,6 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
 
     table->name = malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(table->name, name);
-
-    printf("%s", table->name);
 
     table->attributes = malloc(sizeof(Attribut) * lengthAttributes);
     table->lengthAttributes = lengthAttributes;

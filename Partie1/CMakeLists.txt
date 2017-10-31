@@ -3,9 +3,10 @@ project(Partie1)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES main.c)
+link_directories(../LibYamlDB)
+
+set(SOURCE_FILES main.c ../LibYamlDB/database.c ../LibYamlDB/database.h ../LibYamlDB/table.h ../LibYamlDB/table.c)
 
 add_executable(Partie1 ${SOURCE_FILES})
 
-find_library(YamlDB libYamlDB.a)
-TARGET_LINK_LIBRARIES(Partie1 YamlDB)
+#TARGET_LINK_LIBRARIES(Partie1 YamlDB)

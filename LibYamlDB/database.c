@@ -130,6 +130,10 @@ int databaseFree(Database* database) {
  * Delete .yaml file associated with a database
  */
 void databaseDeleteFile(Database* database) {
+    if (database == NULL) {
+        return;
+    }
+
     char* databaseFileName = malloc(sizeof(char) * (strlen(database->name) + 6));
     sprintf(databaseFileName, "%s.yaml", database->name);
 
@@ -138,6 +142,10 @@ void databaseDeleteFile(Database* database) {
 }
 
 int databaseDelete(Database* database) {
+    if (database == NULL) {
+        return 0;
+    }
+
     databaseDeleteFile(database);
 
     int i;
@@ -174,6 +182,8 @@ void databaseAddNewTable(Database* database, Table* table) {
 
         database->tables[database->lengthTables] = newTable;
         database->lengthTables++;
+
+        // todo Set attributes
     }
 
     char *line = malloc(sizeof(char) * (strlen(table->name) + 8));
