@@ -23,6 +23,7 @@ int databaseWriteNew(Database* database, char* fileName);
 Database* databaseOpen(char* name);
 int databaseSetTables(Database* database);
 
+int tableExists(Database* database, char* tableName);
 void databaseAddNewTable(Database* database, Table* table);
 void databaseDeleteTable(Database* database, Table* table);
 

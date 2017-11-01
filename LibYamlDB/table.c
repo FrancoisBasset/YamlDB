@@ -49,13 +49,13 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
  * Write attributes on table file
  */
 void tableWriteAttributes(Table* table) {
-    fputs("    tables:", table->file);
+    fputs("attributes:\n", table->file);
 
     int i;
 
     for (i = 0; i < table->lengthAttributes; i++) {
-        char* line = malloc(sizeof(char) * (strlen(table->attributes[i]->name) + 8));
-        sprintf(line, "    %s: %d", table->attributes[i]->name, table->attributes[i]->type);
+        char* line = malloc(sizeof(char) * (strlen(table->attributes[i]->name) + 9));
+        sprintf(line, "    %s: %d\n", table->attributes[i]->name, table->attributes[i]->type);
         fputs(line, table->file);
         free(line);
     }
