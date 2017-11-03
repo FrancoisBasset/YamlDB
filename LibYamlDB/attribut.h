@@ -8,6 +8,6 @@ typedef struct Attribut {
     AttributType type;
 } Attribut;
 
-Attribut* attributNew(char* name, enum AttributType type);
+Attribut* attributNew(char* name, AttributType type);
 
 #endif

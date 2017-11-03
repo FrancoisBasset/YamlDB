@@ -20,5 +20,6 @@ void tableWriteAttributes(Table* table);
 void tableFree(Table* table);
 void tableDelete(Database* database, Table* table);
 void tableDeleteFile(Database* database, Table* table);
+Table* tableOpen(char* databaseName, char* tableName);
 
 #endif

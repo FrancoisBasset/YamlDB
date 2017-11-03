@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "table.h"
+#include "attributType.h"
 
 /*
  * Create new table
@@ -64,7 +65,38 @@ Table* tableOpen(char* databaseName, char* tableName) {
     table->name = malloc(sizeof(char) * (strlen(tableName) + 1));
     strcpy(table->name, tableName);
 
-    char *line
+    fseek(table->file, 12, SEEK_SET);
+
+    char* attrLine = malloc(sizeof(char) * 50);
+    strcpy(attrLine, " ");
+
+    int i = -1;
+    while (strcmp(attrLine, "\n") != 0) {
+        fgets(attrLine, 50, table->file);
+        i++;
+    }
+
+    table->lengthAttributes = i;
+    table->attributes = malloc(sizeof(Attribut) * i);
+
+    fseek(table->file, 12, SEEK_SET);
+
+    char* attrName = malloc(sizeof(char) * 50);
+    int type;
+
+    for (i = 0; i < table->lengthAttributes; i++) {
+        table->attributes[i] = malloc(sizeof(Attribut));
+        fscanf(table->file, "    %s: %d", attrName, &type);
+
+        table->attributes[i]->name = malloc(sizeof(char) * (strlen(attrName) + 1));
+        strcpy(table->attributes[i]->name, attrName);
+        table->attributes[i]->type = (AttributType)type;
+    }
+
+    free(attrLine);
+    free(attrName);
+
+    return table;
 }
 
 /*

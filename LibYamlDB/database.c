@@ -34,6 +34,7 @@ Database* databaseNew(char* name) {
 
     if (!databaseWriteNew(database, fileName)) {
         free(fileName);
+        databaseFree(database);
         return NULL;
     }
 
@@ -112,7 +113,14 @@ int databaseRetrieveTables(Database* database) {
     fseek(database->file, 0, SEEK_END);
     long end = ftell(database->file);
 
-    fseek(database->file, 12, SEEK_SET);
+    if (end == 8) {
+        database->lengthTables = 0;
+        database->capacityTables = database->lengthTables + 5;
+        database->tables = malloc(sizeof(Table) * database->capacityTables);
+        return 1;
+    }
+
+    fseek(database->file, 8, SEEK_SET);
 
     char* line = malloc(sizeof(char) * 20);
     strcpy(line, "");
@@ -121,13 +129,25 @@ int databaseRetrieveTables(Database* database) {
 
     while (end != ftell(database->file)) {
         fscanf(database->file, "    - %s\n", line);
-        printf("%s", line);
         i++;
     }
 
-    database->lengthTables = 0;
-    database->capacityTables = database->lengthTables + 5;
-    database->tables = malloc(sizeof(Table) * database->capacityTables);
+    printf("%i tables", i);
+
+    database->lengthTables = i;
+    database->capacityTables = i + 5;
+    database->tables = malloc(sizeof(Table) * i);
+
+    fseek(database->file, 8, SEEK_SET);
+
+    i = 0;
+    while (end != ftell(database->file)) {
+        fscanf(database->file, "    - %s\n", line);
+        database->tables[i] = tableOpen(database->name, line);
+        i++;
+    }
+
+    free(line);
 
     return 1;
 }
@@ -198,7 +218,6 @@ int tableExists(Database* database, char* tableName) {
     return 0;
 }
 
-// todo Voir si une table existe déjà
 void databaseAddNewTable(Database* database, Table* table) {
     if (database->lengthTables == database->capacityTables) {
         database->capacityTables += 5;
