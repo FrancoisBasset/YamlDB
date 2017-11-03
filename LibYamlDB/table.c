@@ -45,6 +45,28 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
     return table;
 }
 
+// todo tableOpen
+
+Table* tableOpen(char* databaseName, char* tableName) {
+    char* fileName = malloc(sizeof(char) * (strlen(databaseName) + strlen(tableName) + 7));
+    sprintf(fileName, "%s.%s.yaml", databaseName, tableName);
+
+    FILE* file = fopen(fileName, "r");
+
+    if (file == NULL) {
+        free(fileName);
+        return NULL;
+    }
+
+    Table* table = malloc(sizeof(Table));
+
+    table->file = file;
+    table->name = malloc(sizeof(char) * (strlen(tableName) + 1));
+    strcpy(table->name, tableName);
+
+    char *line
+}
+
 /*
  * Write attributes on table file
  */

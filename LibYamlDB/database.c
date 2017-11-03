@@ -96,7 +96,7 @@ Database* databaseOpen(char* name) {
     strcpy(database->name, name);
     database->file = file;
 
-    if (!databaseSetTables(database)) {
+    if (!databaseRetrieveTables(database)) {
         databaseFree(database);
         return NULL;
     }
@@ -108,7 +108,23 @@ Database* databaseOpen(char* name) {
  * Retrieve tables
  */
 // todo Retrieve tables from files
-int databaseSetTables(Database* database) {
+int databaseRetrieveTables(Database* database) {
+    fseek(database->file, 0, SEEK_END);
+    long end = ftell(database->file);
+
+    fseek(database->file, 12, SEEK_SET);
+
+    char* line = malloc(sizeof(char) * 20);
+    strcpy(line, "");
+
+    int i = 0;
+
+    while (end != ftell(database->file)) {
+        fscanf(database->file, "    - %s\n", line);
+        printf("%s", line);
+        i++;
+    }
+
     database->lengthTables = 0;
     database->capacityTables = database->lengthTables + 5;
     database->tables = malloc(sizeof(Table) * database->capacityTables);
@@ -173,13 +189,8 @@ int databaseDelete(Database* database) {
 int tableExists(Database* database, char* tableName) {
     int i;
 
-    fseek(database->file, 12, SEEK_SET);
-    char *scan = malloc(sizeof(char) * 20);
-
     for (i = 0; i < database->lengthTables; i++) {
-        fscanf(database->file, "    - %s", scan);
-
-        if (strcmp(scan, tableName) == 0) {
+        if (strcmp(database->tables[i]->name, tableName) == 0) {
             return 1;
         }
     }
