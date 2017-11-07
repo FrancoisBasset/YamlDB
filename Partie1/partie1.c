@@ -3,6 +3,8 @@
 
 #include "partie1.h"
 
+void show(Database* db);
+
 void launch() {
     int baseOpened = 0;
     int choice = -1;
@@ -26,22 +28,41 @@ void launch() {
             case 1:
                 databaseFree(db);
                 db = mainNewDatabase(&baseOpened);
+                show(db);
                 break;
             case 2:
                 databaseFree(db);
                 db = mainOpenDatabase(&baseOpened);
+                show(db);
                 break;
             case 3:
                 mainDeleteDatabase(db, &baseOpened);
                 break;
             case 4:
                 mainDatabaseAddNewTable(db);
+                show(db);
                 break;
         }
     }
 
     if (baseOpened) {
         databaseFree(db);
+    }
+}
+
+void show(Database* d) {
+    printf("%s\n", d->name);
+    printf("%d / %d tables\n\n", d->lengthTables, d->capacityTables);
+
+    int i;
+    int j;
+
+    for (i = 0; i < d->lengthTables; i++) {
+        printf("%s\n  %d attrs\n\n", d->tables[i]->name, d->tables[i]->lengthAttributes);
+
+        for (j = 0; j < d->tables[i]->lengthAttributes; j++) {
+            printf("- %s   %d\n", d->tables[i]->attributes[j]->name, d->tables[i]->attributes[j]->type);
+        }
     }
 }
 

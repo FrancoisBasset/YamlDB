@@ -53,9 +53,9 @@ Table* tableOpen(char* databaseName, char* tableName) {
     sprintf(fileName, "%s.%s.yaml", databaseName, tableName);
 
     FILE* file = fopen(fileName, "r");
+    free(fileName);
 
     if (file == NULL) {
-        free(fileName);
         return NULL;
     }
 
@@ -82,15 +82,32 @@ Table* tableOpen(char* databaseName, char* tableName) {
     fseek(table->file, 12, SEEK_SET);
 
     char* attrName = malloc(sizeof(char) * 50);
-    int type;
+    int type = 0;
 
     for (i = 0; i < table->lengthAttributes; i++) {
         table->attributes[i] = malloc(sizeof(Attribut));
-        fscanf(table->file, "    %s: %d", attrName, &type);
+        fgets(attrLine, 50, table->file);
+        //printf("%s", attrLine);
+        sscanf(attrLine, "    %[^:]: %d", attrName, &type);
+
+        printf("%s %d", attrName, type);
 
         table->attributes[i]->name = malloc(sizeof(char) * (strlen(attrName) + 1));
         strcpy(table->attributes[i]->name, attrName);
-        table->attributes[i]->type = (AttributType)type;
+        switch (type) {
+            case 1:
+                table->attributes[i]->type = Char;
+                break;
+            case 2:
+                table->attributes[i]->type = Int;
+                break;
+            case 3:
+                table->attributes[i]->type = Double;
+                break;
+            case 4:
+                table->attributes[i]->type = String;
+                break;
+        }
     }
 
     free(attrLine);
@@ -123,8 +140,6 @@ void tableFree(Table* table) {
         return;
     }
 
-    free(table->name);
-
     int i;
 
     for (i = 0; i < table->lengthAttributes; i++) {
@@ -132,6 +147,7 @@ void tableFree(Table* table) {
         free(table->attributes[i]);
     }
 
+    free(table->name);
     fclose(table->file);
     free(table->attributes);
     free(table);

@@ -5,6 +5,8 @@
 
 typedef struct Database Database;
 
+
+
 #include "table.h"
 
 struct Database {

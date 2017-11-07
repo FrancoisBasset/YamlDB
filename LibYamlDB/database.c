@@ -132,8 +132,6 @@ int databaseRetrieveTables(Database* database) {
         i++;
     }
 
-    printf("%i tables", i);
-
     database->lengthTables = i;
     database->capacityTables = i + 5;
     database->tables = malloc(sizeof(Table) * i);
@@ -160,15 +158,14 @@ int databaseFree(Database* database) {
         return 0;
     }
 
-    free(database->name);
-    fclose(database->file);
-
     int i;
 
     for (i = 0; i < database->lengthTables; i++) {
         tableFree(database->tables[i]);
     }
 
+    free(database->name);
+    fclose(database->file);
     free(database->tables);
     free(database);
 

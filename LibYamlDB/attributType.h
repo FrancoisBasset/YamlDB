@@ -2,10 +2,10 @@
 #define LIBYAMLDB_ATTRIBUT_TYPE
 
 typedef enum AttributType {
-    Char,
-    Int,
-    Double,
-    String
+    Char = 1,
+    Int = 2,
+    Double = 3,
+    String = 4
 } AttributType;
 
 char* attributTypeGet(AttributType type);
