@@ -128,8 +128,6 @@ int databaseRetrieveTables(Database* database) {
         i++;
     }
 
-    printf("i = %d", i);
-
     database->lengthTables = i;
     database->capacityTables = i + 5;
     database->tables = malloc(sizeof(Table) * database->capacityTables);

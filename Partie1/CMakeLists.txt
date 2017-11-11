@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 99)
 
 link_directories(../LibYamlDB)
 
-set(SOURCE_FILES main.c ../LibYamlDB/database.c ../LibYamlDB/database.h ../LibYamlDB/table.h ../LibYamlDB/table.c partie1.c partie1.h)
+set(SOURCE_FILES main.c ../LibYamlDB/database.h ../LibYamlDB/database.c ../LibYamlDB/table.h ../LibYamlDB/table.c ../LibYamlDB/attribut.h ../LibYamlDB/attribut.c ../LibYamlDB/attributType.h ../LibYamlDB/attributType.c partie1.h partie1.c)
 
 add_executable(Partie1 ${SOURCE_FILES} partie1.c partie1.h)
 

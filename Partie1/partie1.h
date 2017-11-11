@@ -2,6 +2,7 @@
 #define PARTIE1_H
 
 #include "../LibYamlDB/database.h"
+#include "../LibYamlDB/attribut.h"
 
 void launch();
 void menu(char* databaseName, int baseOpened);

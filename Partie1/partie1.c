@@ -67,7 +67,9 @@ void show(Database* d) {
         printf("\n%s\n", d->tables[i]->name);
 
         for (j = 0; j < d->tables[i]->lengthAttributes; j++) {
-            printf("    - %s   %d\n", d->tables[i]->attributes[j]->name, d->tables[i]->attributes[j]->type);
+            char* type = attributTypeGet(d->tables[i]->attributes[j]->type);
+            printf("    - %s   %s\n", d->tables[i]->attributes[j]->name, type);
+            free(type);
         }
     }
 }
@@ -82,6 +84,7 @@ Database* mainNewDatabase(int* baseOpened) {
     if (strchr(dbName, '.') != NULL) {
         *baseOpened = 0;
         printf("Database name cannot contains dots");
+        free(dbName);
         return NULL;
     }
 
@@ -90,6 +93,7 @@ Database* mainNewDatabase(int* baseOpened) {
     if (db == NULL) {
         printf("Can't create this database");
         *baseOpened = 0;
+        free(dbName);
     } else {
         *baseOpened = 1;
     }
@@ -98,7 +102,7 @@ Database* mainNewDatabase(int* baseOpened) {
 }
 
 Database* mainOpenDatabase(int* baseOpened) {
-    char *dbName = malloc(sizeof(char) * 50);
+    char *dbName = malloc(sizeof(char) * 20);
 
     printf("Liste des bases de données :\n");
     system("basename -a -s .yaml *.yaml");
@@ -111,6 +115,7 @@ Database* mainOpenDatabase(int* baseOpened) {
     if (db == NULL) {
         printf("Can't open this database");
         *baseOpened = 0;
+        free(dbName);
     } else {
         *baseOpened = 1;
     }
@@ -120,7 +125,7 @@ Database* mainOpenDatabase(int* baseOpened) {
 
 void mainDeleteDatabase(Database* database, int* baseOpened) {
     if (!*baseOpened) {
-        char databaseName[50];
+        char *databaseName = malloc(sizeof(char) * 20);
 
         printf("Liste des bases de données :\n");
         system("basename -a -s .yaml *.yaml");
@@ -161,7 +166,7 @@ void mainDatabaseAddNewTable(Database* database) {
     int i;
 
     for (i = 0; i < lengthAttributes; i++) {
-        char attributeName[20];
+        char *attributeName = malloc(sizeof(char) * 20);
         printf("Nom : ");
         scanf("%s", attributeName);
 
@@ -169,10 +174,7 @@ void mainDatabaseAddNewTable(Database* database) {
         printf("1- char\n2- int\n3- double\n4- string\n5- int autoincrement\n");
         scanf("%d", &type);
 
-        attributes[i] = malloc(sizeof(Attribut));
-        attributes[i]->name = malloc(sizeof(char) * (strlen(attributeName) + 1));
-        strcpy(attributes[i]->name, attributeName);
-        attributes[i]->type = type;
+        attributes[i] = attributNew(attributeName, type);
     }
 
     Table* table = tableNew(database->name, tableName, lengthAttributes, attributes);
@@ -192,7 +194,7 @@ void mainDatabaseDeleteTable(Database* database) {
     printf("Tables à supprimer :\n");
     showAllTables(database);
 
-    char* tableName = malloc(sizeof(char) * 50);
+    char* tableName = malloc(sizeof(char) * 20);
 
     scanf("%s", tableName);
 
