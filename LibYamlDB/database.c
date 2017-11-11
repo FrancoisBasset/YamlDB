@@ -25,9 +25,7 @@ Database* databaseNew(char* name) {
 
     Database* database = malloc(sizeof(Database));
 
-    database->name = malloc(sizeof(char) * (strlen(name) + 1));
-    strcpy(database->name, name);
-
+    database->name = name;
     database->lengthTables = 0;
     database->capacityTables = 5;
     database->tables = malloc(sizeof(Table) * database->capacityTables);
@@ -73,7 +71,7 @@ Database* databaseOpen(char* name) {
     char*  fileName = malloc(sizeof(char) * (strlen(name) + 6));
     sprintf(fileName, "%s.yaml", name);
 
-    FILE* file = fopen(fileName, "r");
+    FILE* file = fopen(fileName, "r+");
     free(fileName);
 
     if (file == NULL) {
@@ -93,8 +91,7 @@ Database* databaseOpen(char* name) {
     free(firstLine);
 
     Database* database = malloc(sizeof(Database));
-    database->name = malloc(sizeof(char) * (strlen(name) + 1));
-    strcpy(database->name, name);
+    database->name = name;
     database->file = file;
 
     if (!databaseRetrieveTables(database)) {
@@ -108,7 +105,6 @@ Database* databaseOpen(char* name) {
 /*
  * Retrieve tables
  */
-// todo Retrieve tables from files
 int databaseRetrieveTables(Database* database) {
     fseek(database->file, 0, SEEK_END);
     long end = ftell(database->file);
@@ -132,9 +128,11 @@ int databaseRetrieveTables(Database* database) {
         i++;
     }
 
+    printf("i = %d", i);
+
     database->lengthTables = i;
     database->capacityTables = i + 5;
-    database->tables = malloc(sizeof(Table) * i);
+    database->tables = malloc(sizeof(Table) * database->capacityTables);
 
     fseek(database->file, 8, SEEK_SET);
 
@@ -227,28 +225,12 @@ void databaseAddNewTable(Database* database, Table* table) {
             tables[i] = database->tables[i];
         }
 
+        free(database->tables);
+
         database->tables = tables;
     }
 
-    Table* newTable = malloc(sizeof(Table));
-    newTable->name = malloc(sizeof(char) * (strlen(table->name) + 1));
-    strcpy(newTable->name, table->name);
-
-    newTable->file = table->file;
-
-    newTable->lengthAttributes = table->lengthAttributes;
-    newTable->attributes = malloc(sizeof(Attribut) * newTable->lengthAttributes);
-
-    int i;
-
-    for (i = 0; i < newTable->lengthAttributes; i++) {
-        newTable->attributes[i] = malloc(sizeof(Attribut));
-        newTable->attributes[i]->name = malloc(sizeof(char) * (strlen(table->attributes[i]->name) + 1));
-        strcpy(newTable->attributes[i]->name, table->attributes[i]->name);
-        newTable->attributes[i]->type = table->attributes[i]->type;
-    }
-
-    database->tables[database->lengthTables] = newTable;
+    database->tables[database->lengthTables] = table;
     database->lengthTables++;
 
     char *line = malloc(sizeof(char) * (strlen(table->name) + 8));
@@ -259,4 +241,22 @@ void databaseAddNewTable(Database* database, Table* table) {
 
     tableWriteAttributes(table);
     fputs("\noccurences:\n", table->file);
+}
+
+// todo remove table entry from database file
+void databaseDeleteTable(Database* database, char* tableName) {
+    if (!tableExists(database, tableName)) {
+        return;
+    }
+
+    int i;
+
+    for (i = 0; i < database->lengthTables; i++) {
+        if (strcmp(database->tables[i]->name, tableName) == 0) {
+            break;
+        }
+        i++;
+    }
+
+    tableDelete(database, database->tables[i]);
 }

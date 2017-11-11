@@ -19,40 +19,27 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
     FILE *file = fopen(fileName, "r");
 
     if (file != NULL) {
+        fclose(file);
         free(fileName);
         return NULL;
     }
 
     Table* table = malloc(sizeof(Table));
-
     table->file = fopen(fileName, "w");
-    free(fileName);
-
-    table->name = malloc(sizeof(char) * (strlen(name) + 1));
-    strcpy(table->name, name);
-
-    table->attributes = malloc(sizeof(Attribut) * lengthAttributes);
+    table->name = name;
+    table->attributes = attributes;
     table->lengthAttributes = lengthAttributes;
 
-    int i;
-
-    for (i = 0; i < lengthAttributes; i++) {
-        table->attributes[i] = malloc(sizeof(Attribut));
-        table->attributes[i]->name = malloc(sizeof(char) * (strlen(attributes[i]->name) + 1));
-        strcpy(table->attributes[i]->name, attributes[i]->name);
-        table->attributes[i]->type = attributes[i]->type;
-    }
+    free(fileName);
 
     return table;
 }
-
-// todo tableOpen
 
 Table* tableOpen(char* databaseName, char* tableName) {
     char* fileName = malloc(sizeof(char) * (strlen(databaseName) + strlen(tableName) + 7));
     sprintf(fileName, "%s.%s.yaml", databaseName, tableName);
 
-    FILE* file = fopen(fileName, "r");
+    FILE* file = fopen(fileName, "r+");
     free(fileName);
 
     if (file == NULL) {
@@ -87,10 +74,7 @@ Table* tableOpen(char* databaseName, char* tableName) {
     for (i = 0; i < table->lengthAttributes; i++) {
         table->attributes[i] = malloc(sizeof(Attribut));
         fgets(attrLine, 50, table->file);
-        //printf("%s", attrLine);
         sscanf(attrLine, "    %[^:]: %d", attrName, &type);
-
-        printf("%s %d", attrName, type);
 
         table->attributes[i]->name = malloc(sizeof(char) * (strlen(attrName) + 1));
         strcpy(table->attributes[i]->name, attrName);
@@ -107,6 +91,8 @@ Table* tableOpen(char* databaseName, char* tableName) {
             case 4:
                 table->attributes[i]->type = String;
                 break;
+            case 5:
+                table->attributes[i]->type = IntAutoIncrement;
         }
     }
 
@@ -157,7 +143,7 @@ void tableFree(Table* table) {
  * Delete file belongs to a table
  */
 void tableDeleteFile(Database* database, Table* table) {
-    char* tableFileName = malloc(sizeof(char) * (strlen(table->name) + 6));
+    char* tableFileName = malloc(sizeof(char) * (strlen(database->name) + strlen(table->name) + 7));
     sprintf(tableFileName, "%s.%s.yaml", database->name, table->name);
 
     unlink(tableFileName);

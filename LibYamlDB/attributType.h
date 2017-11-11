@@ -5,7 +5,8 @@ typedef enum AttributType {
     Char = 1,
     Int = 2,
     Double = 3,
-    String = 4
+    String = 4,
+    IntAutoIncrement = 5
 } AttributType;
 
 char* attributTypeGet(AttributType type);

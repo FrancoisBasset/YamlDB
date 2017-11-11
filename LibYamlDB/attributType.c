@@ -21,8 +21,11 @@ char* attributTypeGet(AttributType type) {
             break;
         case String:
             alphaType = malloc(sizeof(char) * 7);
-            strcpy(alphaType, "String");
+            strcpy(alphaType, "string");
             break;
+        case IntAutoIncrement:
+            alphaType = malloc(sizeof(char) * 18);
+            strcpy(alphaType, "int autoincrement");
         default:
             alphaType = malloc(sizeof(char) * 5);
             strcpy(alphaType, "NULL");

@@ -17,8 +17,6 @@ struct Database {
     int capacityTables;
 };
 
-int fileExists(char* fileName);
-
 Database* databaseNew(char* name);
 int databaseWriteNew(Database* database, char* fileName);
 
@@ -27,7 +25,7 @@ int databaseRetrieveTables(Database* database);
 
 int tableExists(Database* database, char* tableName);
 void databaseAddNewTable(Database* database, Table* table);
-void databaseDeleteTable(Database* database, Table* table);
+void databaseDeleteTable(Database* database, char* tableName);
 
 int databaseFree(Database* database);
 int databaseDelete(Database* database);

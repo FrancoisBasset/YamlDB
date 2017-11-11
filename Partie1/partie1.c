@@ -3,8 +3,6 @@
 
 #include "partie1.h"
 
-void show(Database* db);
-
 void launch() {
     int baseOpened = 0;
     int choice = -1;
@@ -28,18 +26,26 @@ void launch() {
             case 1:
                 databaseFree(db);
                 db = mainNewDatabase(&baseOpened);
-                show(db);
+                if (db != NULL) {
+                    show(db);
+                }
                 break;
             case 2:
                 databaseFree(db);
                 db = mainOpenDatabase(&baseOpened);
-                show(db);
+                if (db != NULL) {
+                    show(db);
+                }
                 break;
             case 3:
                 mainDeleteDatabase(db, &baseOpened);
                 break;
             case 4:
                 mainDatabaseAddNewTable(db);
+                show(db);
+                break;
+            case 5:
+                mainDatabaseDeleteTable(db);
                 show(db);
                 break;
         }
@@ -58,20 +64,26 @@ void show(Database* d) {
     int j;
 
     for (i = 0; i < d->lengthTables; i++) {
-        printf("%s\n  %d attrs\n\n", d->tables[i]->name, d->tables[i]->lengthAttributes);
+        printf("\n%s\n", d->tables[i]->name);
 
         for (j = 0; j < d->tables[i]->lengthAttributes; j++) {
-            printf("- %s   %d\n", d->tables[i]->attributes[j]->name, d->tables[i]->attributes[j]->type);
+            printf("    - %s   %d\n", d->tables[i]->attributes[j]->name, d->tables[i]->attributes[j]->type);
         }
     }
 }
 
 Database* mainNewDatabase(int* baseOpened) {
-    char dbName[20];
+    char *dbName = malloc(sizeof(char) * 20);
 
     printf("Nom de la base de données : ");
     scanf("%s", dbName);
     //system("clear");
+
+    if (strchr(dbName, '.') != NULL) {
+        *baseOpened = 0;
+        printf("Database name cannot contains dots");
+        return NULL;
+    }
 
     Database* db = databaseNew(dbName);
 
@@ -86,7 +98,7 @@ Database* mainNewDatabase(int* baseOpened) {
 }
 
 Database* mainOpenDatabase(int* baseOpened) {
-    char dbName[50];
+    char *dbName = malloc(sizeof(char) * 50);
 
     printf("Liste des bases de données :\n");
     system("basename -a -s .yaml *.yaml");
@@ -106,7 +118,6 @@ Database* mainOpenDatabase(int* baseOpened) {
     return db;
 }
 
-// todo Supprimer fichier tables
 void mainDeleteDatabase(Database* database, int* baseOpened) {
     if (!*baseOpened) {
         char databaseName[50];
@@ -127,8 +138,14 @@ void mainDeleteDatabase(Database* database, int* baseOpened) {
 // todo check if table have no dots
 void mainDatabaseAddNewTable(Database* database) {
     printf("Nom de la table : ");
-    char tableName[20];
+    char *tableName = malloc(sizeof(char) * 20);
     scanf("%s", tableName);
+
+    if (strchr(tableName, '.') != NULL) {
+        printf("Table name cannot contains dots");
+        free(tableName);
+        return;
+    }
 
     if (tableExists(database, tableName)) {
         printf("Table already exists\n");
@@ -149,7 +166,7 @@ void mainDatabaseAddNewTable(Database* database) {
         scanf("%s", attributeName);
 
         int type;
-        printf("1:char 2:int 3:double 4:char*");
+        printf("1- char\n2- int\n3- double\n4- string\n5- int autoincrement\n");
         scanf("%d", &type);
 
         attributes[i] = malloc(sizeof(Attribut));
@@ -160,18 +177,28 @@ void mainDatabaseAddNewTable(Database* database) {
 
     Table* table = tableNew(database->name, tableName, lengthAttributes, attributes);
 
-    for (i = 0; i < lengthAttributes; i++) {
-        free(attributes[i]->name);
-        free(attributes[i]);
-    }
-
-    free(attributes);
-
-    printf("1");
     databaseAddNewTable(database, table);
-    printf("2");
+}
 
-    tableFree(table);
+void showAllTables(Database* database) {
+    int i;
+
+    for (i = 0; i < database->lengthTables; i++) {
+        printf("%s\n", database->tables[i]->name);
+    }
+}
+
+void mainDatabaseDeleteTable(Database* database) {
+    printf("Tables à supprimer :\n");
+    showAllTables(database);
+
+    char* tableName = malloc(sizeof(char) * 50);
+
+    scanf("%s", tableName);
+
+    databaseDeleteTable(database, tableName);
+
+    free(tableName);
 }
 
 void menu(char* databaseName, int baseOpened) {

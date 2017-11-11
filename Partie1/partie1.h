@@ -9,5 +9,7 @@ Database* mainNewDatabase(int* baseOpened);
 Database* mainOpenDatabase(int* baseOpened);
 void mainDeleteDatabase(Database* database, int* baseOpened);
 void mainDatabaseAddNewTable(Database* database);
+void show(Database* db);
+void mainDatabaseDeleteTable(Database* database);
 
 #endif
