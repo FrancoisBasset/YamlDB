@@ -196,7 +196,9 @@ int databaseDelete(Database* database) {
         tableDeleteFile(database, database->tables[i]);
     }
 
-    return databaseFree(database);
+    int res = databaseFree(database);
+
+    return res;
 }
 
 int tableExists(Database* database, char* tableName) {

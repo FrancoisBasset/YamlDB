@@ -39,14 +39,19 @@ void launch() {
                 break;
             case 3:
                 mainDeleteDatabase(db, &baseOpened);
+                db = NULL;
                 break;
             case 4:
-                mainDatabaseAddNewTable(db);
-                show(db);
+                if (baseOpened) {
+                    mainDatabaseAddNewTable(db);
+                    show(db);
+                }
                 break;
             case 5:
-                mainDatabaseDeleteTable(db);
-                show(db);
+                if (baseOpened) {
+                    mainDatabaseDeleteTable(db);
+                    show(db);
+                }
                 break;
         }
     }
@@ -133,6 +138,11 @@ void mainDeleteDatabase(Database* database, int* baseOpened) {
         scanf("%s", databaseName);
 
         Database* toDelete = databaseOpen(databaseName);
+
+        if (toDelete == NULL) {
+            free(databaseName);
+        }
+
         databaseDelete(toDelete);
     } else {
         *baseOpened = 0;
@@ -140,7 +150,6 @@ void mainDeleteDatabase(Database* database, int* baseOpened) {
     }
 }
 
-// todo check if table have no dots
 void mainDatabaseAddNewTable(Database* database) {
     printf("Nom de la table : ");
     char *tableName = malloc(sizeof(char) * 20);
@@ -165,6 +174,8 @@ void mainDatabaseAddNewTable(Database* database) {
 
     int i;
 
+    int primary = 0;
+
     for (i = 0; i < lengthAttributes; i++) {
         char *attributeName = malloc(sizeof(char) * 20);
         printf("Nom : ");
@@ -173,6 +184,24 @@ void mainDatabaseAddNewTable(Database* database) {
         int type;
         printf("1- char\n2- int\n3- double\n4- string\n5- int autoincrement\n");
         scanf("%d", &type);
+
+        if (type == 5 && primary) {
+            printf("Already have primary key\n");
+            i--;
+            free(attributeName);
+            continue;
+        }
+
+        if (type == 5 && !primary) {
+            primary = 1;
+        }
+
+        if (type < 1 || type > 5) {
+            i--;
+            printf("Bad attribut type\n");
+            free(attributeName);
+            continue;
+        }
 
         attributes[i] = attributNew(attributeName, type);
     }
