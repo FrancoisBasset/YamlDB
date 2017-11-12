@@ -18,7 +18,6 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
 void tableWriteAttributes(Table* table);
 
 void tableFree(Table* table);
-void tableDelete(Database* database, Table* table);
 void tableDeleteFile(Database* database, Table* table);
 Table* tableOpen(char* databaseName, char* tableName);
 

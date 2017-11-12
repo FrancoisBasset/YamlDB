@@ -149,16 +149,3 @@ void tableDeleteFile(Database* database, Table* table) {
     unlink(tableFileName);
     free(tableFileName);
 }
-
-
-void tableDelete(Database* database, Table* table) {
-    tableDeleteFile(database, table);
-
-    int tablePosition = 0;
-
-    while (strcmp(table->name, database->tables[tablePosition]->name) != 0) {
-        tablePosition++;
-    }
-
-    tableFree(table);
-}

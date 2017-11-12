@@ -243,7 +243,6 @@ void databaseAddNewTable(Database* database, Table* table) {
     fputs("\noccurences:\n", table->file);
 }
 
-// todo remove table entry from database file
 void databaseDeleteTable(Database* database, char* tableName) {
     if (!tableExists(database, tableName)) {
         return;
@@ -255,8 +254,38 @@ void databaseDeleteTable(Database* database, char* tableName) {
         if (strcmp(database->tables[i]->name, tableName) == 0) {
             break;
         }
-        i++;
     }
 
-    tableDelete(database, database->tables[i]);
+    tableDeleteFile(database, database->tables[i]);
+    tableFree(database->tables[i]);
+
+    int j;
+
+    for (j = i; j < database->lengthTables - 1; j++) {
+        database->tables[j] = database->tables[j + 1];
+    }
+
+    database->lengthTables--;
+
+    databaseWriteModifications(database);
+}
+
+void databaseWriteModifications(Database* database) {
+    fclose(database->file);
+
+    char* fileName = malloc(sizeof(char) * (strlen(database->name) + 6));
+    sprintf(fileName, "%s.yaml", database->name);
+    database->file = fopen(fileName, "w");
+    free(fileName);
+
+    fputs("tables:\n", database->file);
+
+    int i;
+
+    for (i = 0; i < database->lengthTables; i++) {
+        char* line = malloc(sizeof(char) * (strlen(database->tables[i]->name) + 8));
+        sprintf(line, "    - %s", database->tables[i]->name);
+        fputs(line, database->file);
+        free(line);
+    }
 }

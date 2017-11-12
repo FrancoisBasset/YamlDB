@@ -30,4 +30,6 @@ void databaseDeleteTable(Database* database, char* tableName);
 int databaseFree(Database* database);
 int databaseDelete(Database* database);
 
+void databaseWriteModifications(Database* database);
+
 #endif
