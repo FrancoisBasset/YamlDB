@@ -4,10 +4,8 @@
 
 #include "table.h"
 #include "attributType.h"
+#include "occurence.h"
 
-/*
- * Create new table
- */
 Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut** attributes) {
     if (name == NULL) {
         return NULL;
@@ -38,6 +36,11 @@ Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut**
 Table* tableOpen(char* databaseName, char* tableName) {
     char* fileName = malloc(sizeof(char) * (strlen(databaseName) + strlen(tableName) + 7));
     sprintf(fileName, "%s.%s.yaml", databaseName, tableName);
+
+    if (!tableIs(fileName)) {
+        free(fileName);
+        return NULL;
+    }
 
     FILE* file = fopen(fileName, "r+");
     free(fileName);
@@ -118,6 +121,29 @@ void tableWriteAttributes(Table* table) {
     }
 }
 
+void tableWriteOccurence(Table* table, Occurence* occurence) {
+    fputs("    - [", table->file);
+
+    int i;
+    char* text = malloc(sizeof(char) * 100);
+
+    for (i = 0; i < occurence->length - 1; i++) {
+        text = occurence->values[i]->value;
+        sprintf(text, "%s, ", text);
+        fputs(text, table->file);
+    }
+
+    i++;
+    text = occurence->values[i]->value;
+    sprintf(text, "%s, ", text);
+    fputs(text, table->file);
+}
+
+void tableInsertOccurence(Table* table, Occurence* occurence) {
+    tableWriteOccurence(table, occurence);
+    // inserer une occurence dans le tableau d'occurences
+}
+
 /*
  * Free ressources of a table
  */
@@ -148,4 +174,30 @@ void tableDeleteFile(Database* database, Table* table) {
 
     unlink(tableFileName);
     free(tableFileName);
+}
+
+int tableIs(char* fileName) {
+    char* part = strstr(fileName, ".yaml");
+
+    if (part == NULL) {
+        return 0;
+    }
+
+    FILE* file = fopen(fileName, "r");
+
+    if (file == NULL) {
+        return 0;
+    }
+
+    char firstLine[12];
+    fgets(firstLine, 12, file);
+
+    if (strcmp(firstLine, "attributes:") != 0) {
+        fclose(file);
+        return 0;
+    }
+
+    fclose(file);
+
+    return 1;
 }

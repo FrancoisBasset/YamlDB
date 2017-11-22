@@ -54,7 +54,7 @@
       <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
+            <state relative-caret-position="0">
               <caret line="7" column="217" lean-forward="false" selection-start-line="7" selection-start-column="217" selection-end-line="7" selection-end-column="217" />
               <folding />
             </state>
@@ -64,23 +64,22 @@
       <file leaf-file-name="database.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../LibYamlDB/database.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="394">
-              <caret line="270" column="0" lean-forward="false" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+            <state relative-caret-position="3225">
+              <caret line="278" column="19" lean-forward="true" selection-start-line="278" selection-start-column="19" selection-end-line="278" selection-end-column="19" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#84#875#0" expanded="false" />
                 <element signature="e#877#1180#0" expanded="false" />
-                <element signature="e#1182#2010#0" expanded="false" />
                 <element signature="e#3034#3394#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="table.c" pinned="false" current-in-tab="false">
+      <file leaf-file-name="table.c" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../LibYamlDB/table.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="843">
+            <state relative-caret-position="2058">
               <caret line="150" column="1" lean-forward="false" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
@@ -89,36 +88,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="partie1.c" pinned="false" current-in-tab="true">
+      <file leaf-file-name="partie1.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/partie1.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+            <state relative-caret-position="375">
+              <caret line="70" column="43" lean-forward="true" selection-start-line="70" selection-start-column="43" selection-end-line="70" selection-end-column="43" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="partie1.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/partie1.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="34" lean-forward="false" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
-              <folding>
-                <element signature="e#37#71#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.c">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -240,12 +217,12 @@
       <workItem from="1510310599380" duration="867000" />
       <workItem from="1510318645701" duration="6388000" />
       <workItem from="1510387890719" duration="24245000" />
-      <workItem from="1510473570275" duration="11526000" />
+      <workItem from="1510473570275" duration="11773000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="217557000" />
+    <option name="totallyTimeSpent" value="217804000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -261,7 +238,7 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32884398" sideWeight="0.49786553" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32435465" sideWeight="0.49786553" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32435465" sideWeight="0.49786553" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32659933" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.50213444" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.335578" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -312,7 +289,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -354,7 +330,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -404,7 +379,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -474,7 +448,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -504,7 +477,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -564,7 +536,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -616,7 +587,6 @@
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
@@ -735,19 +705,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/partie1.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="34" lean-forward="false" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
-          <folding>
-            <element signature="e#37#71#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
+        <state relative-caret-position="0">
           <caret line="7" column="217" lean-forward="false" selection-start-line="7" selection-start-column="217" selection-end-line="7" selection-end-column="217" />
           <folding />
         </state>
@@ -761,10 +721,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../LibYamlDB/table.c">
+    <entry file="file://$PROJECT_DIR$/partie1.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="843">
-          <caret line="150" column="1" lean-forward="false" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
+        <state relative-caret-position="60">
+          <caret line="4" column="34" lean-forward="false" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+          <folding>
+            <element signature="e#37#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/partie1.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="70" column="43" lean-forward="true" selection-start-line="70" selection-start-column="43" selection-end-line="70" selection-end-column="43" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -773,22 +743,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../LibYamlDB/database.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="270" column="0" lean-forward="false" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+        <state relative-caret-position="3225">
+          <caret line="278" column="19" lean-forward="true" selection-start-line="278" selection-start-column="19" selection-end-line="278" selection-end-column="19" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#84#875#0" expanded="false" />
             <element signature="e#877#1180#0" expanded="false" />
-            <element signature="e#1182#2010#0" expanded="false" />
             <element signature="e#3034#3394#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/partie1.c">
+    <entry file="file://$PROJECT_DIR$/../LibYamlDB/table.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        <state relative-caret-position="2058">
+          <caret line="150" column="1" lean-forward="false" selection-start-line="150" selection-start-column="1" selection-end-line="150" selection-end-column="1" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>

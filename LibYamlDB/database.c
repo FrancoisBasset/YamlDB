@@ -1,12 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "database.h"
 
-/*
- * Create .yaml file and return a Database
- */
 Database* databaseNew(char* name) {
     if (name == NULL) {
         return NULL;
@@ -41,9 +39,6 @@ Database* databaseNew(char* name) {
     return database;
 }
 
-/*
- * Write a database file
- */
 int databaseWriteNew(Database* database, char* fileName) {
     if (database == NULL) {
         return 0;
@@ -60,9 +55,6 @@ int databaseWriteNew(Database* database, char* fileName) {
     return 1;
 }
 
-/*
- * Return an existing database
- */
 Database* databaseOpen(char* name) {
     if (name == NULL) {
         return NULL;
@@ -70,6 +62,11 @@ Database* databaseOpen(char* name) {
 
     char*  fileName = malloc(sizeof(char) * (strlen(name) + 6));
     sprintf(fileName, "%s.yaml", name);
+
+    if (!databaseIs(fileName)) {
+        free(fileName);
+        return NULL;
+    }
 
     FILE* file = fopen(fileName, "r+");
     free(fileName);
@@ -102,9 +99,6 @@ Database* databaseOpen(char* name) {
     return database;
 }
 
-/*
- * Retrieve tables
- */
 int databaseRetrieveTables(Database* database) {
     fseek(database->file, 0, SEEK_END);
     long end = ftell(database->file);
@@ -146,17 +140,12 @@ int databaseRetrieveTables(Database* database) {
     return 1;
 }
 
-/*
- * Free ressources of a database
- */
 int databaseFree(Database* database) {
     if (database == NULL) {
         return 0;
     }
 
-    int i;
-
-    for (i = 0; i < database->lengthTables; i++) {
+    for (int i = 0; i < database->lengthTables; i++) {
         tableFree(database->tables[i]);
     }
 
@@ -168,9 +157,6 @@ int databaseFree(Database* database) {
     return 1;
 }
 
-/*
- * Delete .yaml file associated with a database
- */
 void databaseDeleteFile(Database* database) {
     if (database == NULL) {
         return;
@@ -190,9 +176,7 @@ int databaseDelete(Database* database) {
 
     databaseDeleteFile(database);
 
-    int i;
-
-    for (i = 0; i < database->lengthTables; i++) {
+    for (int i = 0; i < database->lengthTables; i++) {
         tableDeleteFile(database, database->tables[i]);
     }
 
@@ -202,9 +186,7 @@ int databaseDelete(Database* database) {
 }
 
 int tableExists(Database* database, char* tableName) {
-    int i;
-
-    for (i = 0; i < database->lengthTables; i++) {
+    for (int i = 0; i < database->lengthTables; i++) {
         if (strcmp(database->tables[i]->name, tableName) == 0) {
             return 1;
         }
@@ -219,9 +201,7 @@ void databaseAddNewTable(Database* database, Table* table) {
 
         Table** tables = malloc(sizeof(Table) * database->capacityTables);
 
-        int i;
-
-        for (i = 0; i < database->lengthTables; i++) {
+        for (int i = 0; i < database->lengthTables; i++) {
             tables[i] = database->tables[i];
         }
 
@@ -259,9 +239,7 @@ void databaseDeleteTable(Database* database, char* tableName) {
     tableDeleteFile(database, database->tables[i]);
     tableFree(database->tables[i]);
 
-    int j;
-
-    for (j = i; j < database->lengthTables - 1; j++) {
+    for (int j = i; j < database->lengthTables - 1; j++) {
         database->tables[j] = database->tables[j + 1];
     }
 
@@ -280,12 +258,69 @@ void databaseWriteModifications(Database* database) {
 
     fputs("tables:\n", database->file);
 
-    int i;
-
-    for (i = 0; i < database->lengthTables; i++) {
+    for (int i = 0; i < database->lengthTables; i++) {
         char* line = malloc(sizeof(char) * (strlen(database->tables[i]->name) + 8));
         sprintf(line, "    - %s", database->tables[i]->name);
         fputs(line, database->file);
         free(line);
     }
+}
+
+char** databaseShowDatabases(int* databaseLength) {
+    DIR *current = opendir(".");
+
+    struct dirent* file;
+
+    while ((file = readdir(current)) != NULL) {
+        if (databaseIs(file->d_name)) {
+            (*databaseLength)++;
+        }
+    }
+
+    seekdir(current, 0);
+
+    char **dirs = malloc(sizeof(char*) * *databaseLength);
+
+    int i = 0;
+
+    while ((file = readdir(current)) != NULL) {
+        if (databaseIs(file->d_name)) {
+            dirs[i] = malloc(sizeof(char) * (strlen(file->d_name) + 1));
+            strcpy(dirs[i], "");
+            strcpy(dirs[i], strtok(file->d_name, "."));
+
+            i++;
+        }
+    }
+
+    free(file);
+    closedir(current);
+
+    return dirs;
+}
+
+int databaseIs(char* fileName) {
+    char* part = strstr(fileName, ".yaml");
+
+    if (part == NULL) {
+        return 0;
+    }
+
+    FILE* file = fopen(fileName, "r");
+
+    if (file == NULL) {
+        return 0;
+    }
+
+    char firstLine[8];
+    fgets(firstLine, 8, file);
+
+    if (strcmp(firstLine, "tables:") != 0) {
+        fclose(file);
+        return 0;
+    }
+
+    fclose(file);
+
+    return 1;
 }

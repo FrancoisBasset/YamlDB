@@ -1,5 +1,5 @@
-#ifndef PARTIE1_H
-#define PARTIE1_H
+#ifndef PARTIE1
+#define PARTIE1
 
 #include "../LibYamlDB/database.h"
 #include "../LibYamlDB/attribut.h"

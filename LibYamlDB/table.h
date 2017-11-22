@@ -13,12 +13,18 @@ typedef struct Table {
 } Table;
 
 #include "database.h"
+#include "occurence.h"
 
 Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut** attributes);
+Table* tableOpen(char* databaseName, char* tableName);
+
+int tableIs(char* fileName);
+
 void tableWriteAttributes(Table* table);
+void tableWriteOccurence(Table* table, Occurence* occurence);
+void tableInsertOccurence(Table* table, Occurence* occurence);
 
 void tableFree(Table* table);
 void tableDeleteFile(Database* database, Table* table);
-Table* tableOpen(char* databaseName, char* tableName);
 
 #endif

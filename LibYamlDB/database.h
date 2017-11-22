@@ -18,12 +18,15 @@ struct Database {
 };
 
 Database* databaseNew(char* name);
+Database* databaseOpen(char* name);
+
+int databaseIs(char* fileName);
+int tableExists(Database* database, char* tableName);
+
 int databaseWriteNew(Database* database, char* fileName);
 
-Database* databaseOpen(char* name);
 int databaseRetrieveTables(Database* database);
 
-int tableExists(Database* database, char* tableName);
 void databaseAddNewTable(Database* database, Table* table);
 void databaseDeleteTable(Database* database, char* tableName);
 
@@ -31,5 +34,7 @@ int databaseFree(Database* database);
 int databaseDelete(Database* database);
 
 void databaseWriteModifications(Database* database);
+
+char** databaseShowDatabases(int* databaseLength);
 
 #endif
