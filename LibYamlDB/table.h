@@ -5,18 +5,28 @@
 
 #include "attribut.h"
 
-typedef struct Table {
+typedef struct Table Table;
+
+#include "occurence.h"
+
+struct Table {
     FILE* file;
     char* name;
     int lengthAttributes;
     Attribut** attributes;
-} Table;
+    int lengthOccurences;
+    int capacityOccurences;
+    Occurence** occurences;
+};
 
 #include "database.h"
 #include "occurence.h"
 
 Table* tableNew(char* databaseName, char* name, int lengthAttributes, Attribut** attributes);
 Table* tableOpen(char* databaseName, char* tableName);
+
+void tableRetrieveAttributes(Table* table);
+void tableRetrieveOccurences(Table* table);
 
 int tableIs(char* fileName);
 

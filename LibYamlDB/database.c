@@ -140,6 +140,16 @@ int databaseRetrieveTables(Database* database) {
     return 1;
 }
 
+Table* databaseGetTable(Database* database, char* tableName) {
+    for (int i = 0; i < database->lengthTables; i++) {
+        if (strcmp(database->tables[i]->name, tableName) == 0) {
+            return database->tables[i];
+        }
+    }
+
+    return NULL;
+}
+
 int databaseFree(Database* database) {
     if (database == NULL) {
         return 0;
@@ -220,7 +230,6 @@ void databaseAddNewTable(Database* database, Table* table) {
     free(line);
 
     tableWriteAttributes(table);
-    fputs("\noccurences:\n", table->file);
 }
 
 void databaseDeleteTable(Database* database, char* tableName) {

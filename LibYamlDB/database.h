@@ -5,8 +5,6 @@
 
 typedef struct Database Database;
 
-
-
 #include "table.h"
 
 struct Database {
@@ -26,6 +24,7 @@ int tableExists(Database* database, char* tableName);
 int databaseWriteNew(Database* database, char* fileName);
 
 int databaseRetrieveTables(Database* database);
+Table* databaseGetTable(Database* database, char* tableName);
 
 void databaseAddNewTable(Database* database, Table* table);
 void databaseDeleteTable(Database* database, char* tableName);

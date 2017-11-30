@@ -1,8 +1,7 @@
-#include "occurenceValue.h"
-#include "table.h"
+#ifndef LIBYAMLDB_OCCURENCE
+#define LIBYAMLDB_OCCURENCE
 
-#ifndef LIBYAMLDB_OCCURENCE_H
-#define LIBYAMLDB_OCCURENCE_H
+#include "occurenceValue.h"
 
 typedef struct Occurence {
     OccurenceValue** values;
@@ -10,7 +9,10 @@ typedef struct Occurence {
     int capacity;
 } Occurence;
 
+#include "table.h"
+
 Occurence* occurenceNew();
+Occurence* occurenceOpen(char* line);
 void occurenceAdd(Occurence* occurence, OccurenceValue* value);
 
 int occurenceIsCorrect(Table* table, Occurence* occurence);

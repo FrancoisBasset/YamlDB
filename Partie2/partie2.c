@@ -22,10 +22,20 @@ void launch() {
         commandType = getCommandType(command);
 
         switch (commandType) {
+            case CreateDatabase:
+                printf("CreateDatabase");
+                break;
+            case CreateTable:
+                printf("CreateTable");
+                break;
+            case DropDatabase:
+                printf("DropDatabase");
+                break;
+            case DropTable:
+                printf("DropTable");
+                break;
             case Use:
-                databaseFree(database);
-                database = mainUseDatabase(command);
-                show(database);
+                database = mainUseDatabase(database, command);
                 break;
             case Select:
                 printf("Select\n");
@@ -46,16 +56,16 @@ void launch() {
                 mainShowTables(database);
                 break;
             case Describe:
-                printf("Describe");
+                mainDescribeTable(database, command);
                 break;
             case Help:
                 printf("Help\n");
                 break;
             case Exit:
-                printf("Exit\n");
+                printf("Bye\n");
                 break;
             case Unknown:
-                printf("Unknown\n");
+                printf("?\n");
                 break;
             case Null:
                 break;
@@ -95,17 +105,28 @@ void mainShowTables(Database* database) {
     }
 }
 
-Database* mainUseDatabase(char* command) {
+/*Database* mainCreateDatabase(char* command) {
+
+}*/
+
+Database* mainUseDatabase(Database* database, char* command) {
     char* tmp = strtok(command, " ");
 
     for (int i = 1; i < 2; i++) {
         tmp = strtok(NULL, " ");
     }
 
-    char* databaseName = malloc(sizeof(char) * (strlen(tmp) + 1));
-    strcpy(databaseName, tmp);
+    char* databaseName = strdup(tmp);
 
-    Database* database = databaseOpen(databaseName);
+    if (database != NULL) {
+        if (strcmp(database->name, databaseName) == 0) {
+            free(databaseName);
+            return database;
+        }
+    }
+
+    databaseFree(database);
+    database = databaseOpen(databaseName);
 
     if (database == NULL) {
         printf("Database not found\n");
@@ -114,23 +135,29 @@ Database* mainUseDatabase(char* command) {
     return database;
 }
 
-void show(Database* d) {
-    if (d == NULL) {
+void mainDescribeTable(Database* database, char* command) {
+    if (database == NULL) {
         return;
     }
 
-    printf("%s\n", d->name);
-    printf("%d / %d tables\n\n", d->lengthTables, d->capacityTables);
+    char* tableName = malloc(sizeof(char) * 100);
+    sscanf(command, "describe %s", tableName);
 
-    for (int i = 0; i < d->lengthTables; i++) {
-        printf("\n%s\n", d->tables[i]->name);
-
-        for (int j = 0; j < d->tables[i]->lengthAttributes; j++) {
-            char* type = attributTypeGet(d->tables[i]->attributes[j]->type);
-            printf("    - %s   %s\n", d->tables[i]->attributes[j]->name, type);
-            free(type);
-        }
+    if (!tableExists(database, tableName)) {
+        free(tableName);
     }
+
+    Table* table = databaseGetTable(database, tableName);
+
+    printf("%s:\n", table->name);
+
+    for (int i = 0; i < table->lengthAttributes; i++) {
+        char* type = attributTypeGet(table->attributes[i]->type);
+        printf("%s : %s\n", table->attributes[i]->name, type);
+        free(type);
+    }
+
+    free(tableName);
 }
 
 void mainInsertIntoTables(Database* database, char* command) {
@@ -145,6 +172,7 @@ void mainInsertIntoTables(Database* database, char* command) {
         return;
     }
 
+    tableWriteOccurence(table, occurence);
     tableInsertOccurence(table, occurence);
 }
 
@@ -157,13 +185,7 @@ Table* mainGetInsertTable(Database * database, char* command) {
         return NULL;
     }
 
-    Table* table = NULL;
-
-    for (int i = 0; i < database->lengthTables; i++) {
-        if (strcmp(database->tables[i]->name, tableName) == 0) {
-            return database->tables[i];
-        }
-    }
+    Table* table = databaseGetTable(database, tableName);
 
     return table;
 }
@@ -183,7 +205,6 @@ Occurence* mainGetOccurenceInsertValues(char* command) {
     while (value != NULL) {
         trim(value);
         AttributType type = occurenceValueGetType(value);
-        //Stocker le attr type dans la donnée membres pour savoir si c'est du bon type
         occurenceAdd(occurence, occurenceValueNew(value, type));
         value = strtok(NULL, ",");
     }

@@ -8,6 +8,7 @@ typedef struct Attribut {
     AttributType type;
 } Attribut;
 
-Attribut* attributNew(char* name, AttributType type);
+Attribut* attributNew(char* name, int type);
+void attributFree(Attribut* attribut);
 
 #endif

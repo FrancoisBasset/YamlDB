@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "occurence.h"
-#include "table.h"
 
 Occurence* occurenceNew() {
     Occurence* occurence = malloc(sizeof(Occurence));
@@ -14,9 +13,35 @@ Occurence* occurenceNew() {
     return occurence;
 }
 
+Occurence* occurenceOpen(char* line) {
+    sscanf(line, "    - [%s]", line);
+
+    Occurence* occurence = occurenceNew();
+
+    char* value = strtok(line, ",");
+
+    while (value != NULL) {
+        occurenceAdd(occurence, occurenceValueNew(strdup(value), occurenceValueGetType(value)));
+        value = strtok(NULL, ",");
+    }
+
+    for (int i = 0; i < occurence->length; i++) {
+        char* type = attributTypeGet(occurence->values[i]->type);
+        printf("[%s-%s] ", occurence->values[i]->value, type);
+        free(type);
+    }
+
+    printf("\n");
+
+    free(value);
+
+    return occurence;
+}
+
 void occurenceAdd(Occurence* occurence, OccurenceValue* value) {
     if (occurence->length == occurence->capacity) {
-        OccurenceValue** new = malloc(sizeof(OccurenceValue) * (occurence->capacity + 5));
+        occurence->capacity += 5;
+        OccurenceValue** new = malloc(sizeof(OccurenceValue) * occurence->capacity);
 
         for (int i = 0; i < occurence->length; i++) {
             new[i] = occurence->values[i];
@@ -24,7 +49,6 @@ void occurenceAdd(Occurence* occurence, OccurenceValue* value) {
 
         free(occurence->values);
         occurence->values = new;
-        occurence->capacity += 5;
     }
 
     occurence->values[occurence->length] = value;
@@ -65,6 +89,7 @@ int occurenceIsCorrect(Table* table, Occurence* occurence) {
 
 void occurenceFree(Occurence* occurence) {
     for (int i = 0; i < occurence->length; i++) {
+        free(occurence->values[i]->value);
         free(occurence->values[i]);
     }
 

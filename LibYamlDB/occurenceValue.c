@@ -13,7 +13,7 @@ OccurenceValue* occurenceValueNew(char* value, AttributType type) {
 }
 
 AttributType occurenceValueGetType(char* value) {
-    int lastIndex = strlen(value) - 1;
+    int lastIndex = (int)strlen(value) - 1;
 
     if (value[0] == '\'' && value[lastIndex] == '\'') {
         return Char;

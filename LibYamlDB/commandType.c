@@ -5,11 +5,31 @@
 #include "commandType.h"
 
 CommandType getCommandType(char* command) {
-    char* copy = malloc(sizeof(char) * (strlen(command) + 1));
-    strcpy(copy, command);
+    char* copy = strdup(command);
     CommandType type = Unknown;
 
     char* firstWord = strtok(copy, " ");
+    char* secondWord = strtok(NULL, " ");
+
+    if (strcmp(firstWord, "create") == 0) {
+        if (strcmp(secondWord, "database") == 0) {
+            type = CreateDatabase;
+        }
+
+        if (strcmp(secondWord, "table") == 0) {
+            type = CreateTable;
+        }
+    }
+
+    if (strcmp(firstWord, "drop") == 0) {
+        if (strcmp(secondWord, "database") == 0) {
+            type = DropDatabase;
+        }
+
+        if (strcmp(secondWord, "table") == 0) {
+            type = DropTable;
+        }
+    }
 
     if (strcmp(firstWord, "use") == 0) {
         type = Use;
@@ -20,7 +40,7 @@ CommandType getCommandType(char* command) {
     }
 
     if (strcmp(firstWord, "insert") == 0) {
-        if (strcmp(strtok(NULL, " "), "into") == 0) {
+        if (strcmp(secondWord, "into") == 0) {
             type = Insert;
         }
     }
