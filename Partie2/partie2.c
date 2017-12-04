@@ -233,6 +233,42 @@ void mainDeleteFromTable(Database* database, char* command) {
         return;
     }
 
+    int nbOccurencesRes;
+    Occurence** ocs = mainGetOccurencesFromJointures(table, command, &nbOccurencesRes);
+
+    for (int i = 0; i < nbOccurencesRes; i++) {
+        tableRemoveOccurence(table, ocs[i]);
+    }
+
+    tableWriteModifications(database, table);
+}
+
+Table* mainGetDeleteTable(Database* database, char* command) {
+    char* tableName = malloc(sizeof(char) * (strlen(command) + 1));
+    sscanf(command, "delete from %s", tableName);
+
+    if (!tableExists(database, tableName)) {
+        free(tableName);
+        return NULL;
+    }
+
+    Table* table = databaseGetTable(database, tableName);
+
+    free(tableName);
+
+    return table;
+}
+
+Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbOccurencesRes) {
+    if (strstr(command, "where") == NULL) {
+        *nbOccurencesRes = table->lengthOccurences;
+        Occurence** ocs = malloc(sizeof(Occurence*) * *nbOccurencesRes);
+        for (int i = 0; i < *nbOccurencesRes; i++) {
+            ocs[i] = table->occurences[i];
+        }
+        return ocs;
+    }
+
     char* conditionsS = malloc(sizeof(char) * strlen(command));
     sscanf(command, "delete from %*s where %[^\n]", conditionsS);
 
@@ -267,40 +303,13 @@ void mainDeleteFromTable(Database* database, char* command) {
         conditions[i] = conditionGet(conditionsListString[i]);
     }
 
-    for (int i = 0; i < nbConditions; i++) {
-        //printf("|%s|%d|%s|\n", conditions[i]->attribut, conditions[i]->type, conditions[i]->value);
-    }
-
     int correctConditions = conditionAreCorrects(table, conditions, nbConditions);
 
     if (!correctConditions) {
-        return;
-    }
-
-    int nbOccurencesRes;
-    Occurence** ocs = getAllOccurencesFromConditions(table, conditions, nbConditions, &nbOccurencesRes);
-
-    for (int i = 0; i < nbOccurencesRes; i++) {
-        tableRemoveOccurence(table, ocs[i]);
-    }
-
-    tableWriteModifications(database, table);
-
-    //free(conditions);
-}
-
-Table* mainGetDeleteTable(Database* database, char* command) {
-    char* tableName = malloc(sizeof(char) * (strlen(command) + 1));
-    sscanf(command, "delete from %s", tableName);
-
-    if (!tableExists(database, tableName)) {
-        free(tableName);
         return NULL;
     }
 
-    Table* table = databaseGetTable(database, tableName);
+    Occurence** ocs = getAllOccurencesFromConditions(table, conditions, nbConditions, nbOccurencesRes);
 
-    free(tableName);
-
-    return table;
+    return ocs;
 }

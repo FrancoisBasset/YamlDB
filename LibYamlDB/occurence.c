@@ -78,7 +78,6 @@ int occurenceIsCorrect(Table* table, Occurence* occurence) {
             continue;
         }
 
-
         if (table->attributes[i]->type != occurence->values[i]->type) {
             return 0;
         }

@@ -23,5 +23,6 @@ Occurence* mainGetOccurenceInsertValues(char* command);
 
 void mainDeleteFromTable(Database* database, char* command);
 Table* mainGetDeleteTable(Database* database, char* command);
+Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbOccurencesRes);
 
 #endif
