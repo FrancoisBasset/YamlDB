@@ -94,10 +94,10 @@ void tableRetrieveAttributes(Table* table) {
 }
 
 void tableRetrieveOccurences(Table* table) {
-    char* attrLine = malloc(sizeof(char) * 50);
+    char* attrLine = malloc(sizeof(char) * 500);
 
-    fgets(attrLine, 50, table->file);
-    fgets(attrLine, 50, table->file);
+    fgets(attrLine, 500, table->file);
+    fgets(attrLine, 500, table->file);
 
     long current = ftell(table->file);
     fseek(table->file, 0, SEEK_END);
@@ -107,7 +107,7 @@ void tableRetrieveOccurences(Table* table) {
     int i = 0;
 
     while (ftell(table->file) != end) {
-        fgets(attrLine, 50, table->file);
+        fgets(attrLine, 500, table->file);
         i++;
     }
 
@@ -118,7 +118,7 @@ void tableRetrieveOccurences(Table* table) {
     table->occurences = malloc(sizeof(Occurence) * table->lengthOccurences);
 
     for (i = 0; i < table->lengthOccurences; i++) {
-        fgets(attrLine, 50, table->file);
+        fgets(attrLine, 500, table->file);
         table->occurences[i] = occurenceOpen(attrLine);
     }
 
@@ -145,12 +145,9 @@ void tableWriteOccurence(Table* table, Occurence* occurence) {
 
     fputs("    - [", table->file);
 
-    int i = 0;
-    char* text = malloc(sizeof(char) * 100);
-
-    for (i = 0; i < occurence->length; i++) {
-        text = occurence->values[i]->value;
-        sprintf(text, "%s, ", text);
+    for (int i = 0; i < occurence->length; i++) {
+        char* text = occurence->values[i]->value;
+        sprintf(text, "%s,", text);
         fputs(text, table->file);
     }
     fputs("]\n", table->file);
@@ -171,6 +168,52 @@ void tableInsertOccurence(Table* table, Occurence* occurence) {
 
     table->occurences[table->lengthOccurences] = occurence;
     table->lengthOccurences++;
+}
+
+void tableRemoveOccurence(Table* table, Occurence* occurence) {
+    int i;
+
+    for (i = 0; i < table->lengthOccurences; i++) {
+        if (table->occurences[i] == occurence) {
+            break;
+        }
+    }
+
+    occurenceFree(table->occurences[i]);
+    table->lengthOccurences--;
+
+    for (; i < table->lengthOccurences; i++) {
+        table->occurences[i] = table->occurences[i + 1];
+    }
+}
+
+void tableWriteModifications(Database* database, Table* table) {
+    fclose(table->file);
+
+    char* fileName = malloc(sizeof(char) * (strlen(table->name) + strlen(database->name) + 7));
+    sprintf(fileName, "%s.%s.yaml", database->name, table->name);
+    table->file = fopen(fileName, "w");
+    free(fileName);
+
+    fputs("attributes:\n", table->file);
+
+    for (int i = 0; i < table->lengthAttributes; i++) {
+        char* line = malloc(sizeof(char) * (strlen(table->attributes[i]->name) + 11));
+        sprintf(line, "    %s: %d\n", table->attributes[i]->name, table->attributes[i]->type);
+        fputs(line, table->file);
+        free(line);
+    }
+
+    fputs("\noccurences:\n", table->file);
+
+    for(int i = 0; i < table->lengthOccurences; i++) {
+        fputs("    - [", table->file);
+        for (int o = 0; o < table->occurences[i]->length; o++) {
+            fputs(table->occurences[i]->values[o]->value, table->file);
+            fputs(",", table->file);
+        }
+        fputs("]\n", table->file);
+    }
 }
 
 void tableFree(Table* table) {

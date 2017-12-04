@@ -27,5 +27,9 @@ AttributType occurenceValueGetType(char* value) {
         return Double;
     }
 
+    if (value[0] < 48 || value[0] > 57) {
+        return UnknownAttributType;
+    }
+
     return Int;
 }

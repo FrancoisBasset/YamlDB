@@ -16,9 +16,12 @@ Database* mainUseDatabase(Database* database, char* command);
 void mainShowDatabases();
 void mainShowTables(Database* database);
 void mainDescribeTable(Database* database, char* command);
-void mainInsertIntoTables(Database* database, char* command);
 
+void mainInsertIntoTables(Database* database, char* command);
 Table* mainGetInsertTable(Database* database, char* command);
 Occurence* mainGetOccurenceInsertValues(char* command);
+
+void mainDeleteFromTable(Database* database, char* command);
+Table* mainGetDeleteTable(Database* database, char* command);
 
 #endif

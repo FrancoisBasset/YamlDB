@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "partie2.h"
+#include "../LibYamlDB/condition.h"
 
 void launch() {
     printf("Hello, exit to quit\n");
@@ -47,7 +48,7 @@ void launch() {
                 printf("Update\n");
                 break;
             case Delete:
-                printf("Delete\n");
+                mainDeleteFromTable(database, command);
                 break;
             case ShowDatabases:
                 mainShowDatabases();
@@ -97,6 +98,7 @@ void mainShowDatabases() {
 
 void mainShowTables(Database* database) {
     if (database == NULL) {
+        printf("Database is not open\n");
         return;
     }
 
@@ -130,6 +132,7 @@ Database* mainUseDatabase(Database* database, char* command) {
 
     if (database == NULL) {
         printf("Database not found\n");
+        free(databaseName);
     }
 
     return database;
@@ -137,6 +140,7 @@ Database* mainUseDatabase(Database* database, char* command) {
 
 void mainDescribeTable(Database* database, char* command) {
     if (database == NULL) {
+        printf("Database is not open\n");
         return;
     }
 
@@ -145,6 +149,8 @@ void mainDescribeTable(Database* database, char* command) {
 
     if (!tableExists(database, tableName)) {
         free(tableName);
+        printf("Table not found\n");
+        return;
     }
 
     Table* table = databaseGetTable(database, tableName);
@@ -187,6 +193,8 @@ Table* mainGetInsertTable(Database * database, char* command) {
 
     Table* table = databaseGetTable(database, tableName);
 
+    free(tableName);
+
     return table;
 }
 
@@ -210,4 +218,89 @@ Occurence* mainGetOccurenceInsertValues(char* command) {
     }
 
     return occurence;
+}
+
+void mainDeleteFromTable(Database* database, char* command) {
+    if (database == NULL) {
+        printf("Database is not open\n");
+        return;
+    }
+
+    Table* table = mainGetDeleteTable(database, command);
+
+    if (table == NULL) {
+        printf("Table doesn't exist\n");
+        return;
+    }
+
+    char* conditionsS = malloc(sizeof(char) * strlen(command));
+    sscanf(command, "delete from %*s where %[^\n]", conditionsS);
+
+    char **conditionsListString = malloc(sizeof(char*) * 10);
+    int nbConditions = 0;
+
+    conditionsListString[nbConditions] = malloc(sizeof(char) * 100);
+    strcpy(conditionsListString[nbConditions], "");
+
+    char* token = strtok(conditionsS, " ");
+
+    while (token != NULL) {
+        if (strcmp(token, "and") != 0) {
+            strcat(conditionsListString[nbConditions], token);
+            strcat(conditionsListString[nbConditions], " ");
+            token = strtok(NULL, " ");
+        } else {
+            trim(conditionsListString[nbConditions]);
+            nbConditions++;
+            conditionsListString[nbConditions] = malloc(sizeof(char) * 100);
+            strcpy(conditionsListString[nbConditions], "");
+            token = strtok(NULL, " ");
+        }
+    }
+
+    trim(conditionsListString[nbConditions]);
+    nbConditions++;
+
+    Condition** conditions = malloc(sizeof(Condition) * nbConditions);
+
+    for (int i = 0; i < nbConditions; i++) {
+        conditions[i] = conditionGet(conditionsListString[i]);
+    }
+
+    for (int i = 0; i < nbConditions; i++) {
+        //printf("|%s|%d|%s|\n", conditions[i]->attribut, conditions[i]->type, conditions[i]->value);
+    }
+
+    int correctConditions = conditionAreCorrects(table, conditions, nbConditions);
+
+    if (!correctConditions) {
+        return;
+    }
+
+    int nbOccurencesRes;
+    Occurence** ocs = getAllOccurencesFromConditions(table, conditions, nbConditions, &nbOccurencesRes);
+
+    for (int i = 0; i < nbOccurencesRes; i++) {
+        tableRemoveOccurence(table, ocs[i]);
+    }
+
+    tableWriteModifications(database, table);
+
+    //free(conditions);
+}
+
+Table* mainGetDeleteTable(Database* database, char* command) {
+    char* tableName = malloc(sizeof(char) * (strlen(command) + 1));
+    sscanf(command, "delete from %s", tableName);
+
+    if (!tableExists(database, tableName)) {
+        free(tableName);
+        return NULL;
+    }
+
+    Table* table = databaseGetTable(database, tableName);
+
+    free(tableName);
+
+    return table;
 }

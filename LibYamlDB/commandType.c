@@ -50,7 +50,9 @@ CommandType getCommandType(char* command) {
     }
 
     if (strcmp(firstWord, "delete") == 0) {
-        type = Delete;
+        if (strcmp(secondWord, "from") == 0) {
+            type = Delete;
+        }
     }
 
     if (strcmp(firstWord, "help") == 0) {

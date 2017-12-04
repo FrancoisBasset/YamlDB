@@ -14,7 +14,7 @@ Occurence* occurenceNew() {
 }
 
 Occurence* occurenceOpen(char* line) {
-    sscanf(line, "    - [%s]", line);
+    sscanf(line, "    - [%[^]\n]", line);
 
     Occurence* occurence = occurenceNew();
 
@@ -27,7 +27,7 @@ Occurence* occurenceOpen(char* line) {
 
     for (int i = 0; i < occurence->length; i++) {
         char* type = attributTypeGet(occurence->values[i]->type);
-        printf("[%s-%s] ", occurence->values[i]->value, type);
+        printf("[%s-%s]", occurence->values[i]->value, type);
         free(type);
     }
 

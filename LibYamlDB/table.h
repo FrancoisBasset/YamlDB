@@ -34,6 +34,9 @@ void tableWriteAttributes(Table* table);
 void tableWriteOccurence(Table* table, Occurence* occurence);
 void tableInsertOccurence(Table* table, Occurence* occurence);
 
+void tableRemoveOccurence(Table* table, Occurence* occurence);
+void tableWriteModifications(Database* database, Table* table);
+
 void tableFree(Table* table);
 void tableDeleteFile(Database* database, Table* table);
 
