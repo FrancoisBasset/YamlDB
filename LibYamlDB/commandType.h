@@ -2,10 +2,6 @@
 #define LIBYAMLDB_COMMANDTYPE
 
 typedef enum CommandType {
-    CreateDatabase,
-    CreateTable,
-    DropDatabase,
-    DropTable,
     Use,
     Select,
     Insert,

@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "partie2.h"
-#include "../LibYamlDB/condition.h"
 
 void launch() {
     printf("Hello, exit to quit\n");
@@ -23,18 +22,6 @@ void launch() {
         commandType = getCommandType(command);
 
         switch (commandType) {
-            case CreateDatabase:
-                printf("CreateDatabase");
-                break;
-            case CreateTable:
-                printf("CreateTable");
-                break;
-            case DropDatabase:
-                printf("DropDatabase");
-                break;
-            case DropTable:
-                printf("DropTable");
-                break;
             case Use:
                 database = mainUseDatabase(database, command);
                 break;
@@ -45,7 +32,7 @@ void launch() {
                 mainInsertIntoTables(database, command);
                 break;
             case Update:
-                printf("Update\n");
+                mainUpdateTable(database, command);
                 break;
             case Delete:
                 mainDeleteFromTable(database, command);
@@ -171,7 +158,7 @@ void mainInsertIntoTables(Database* database, char* command) {
         return;
     }
 
-    Table* table = mainGetInsertTable(database, command);
+    Table* table = mainGetTableFromCommand(database, command, Insert);
     Occurence* occurence = mainGetOccurenceInsertValues(command);
 
     if (!occurenceIsCorrect(table, occurence)) {
@@ -180,22 +167,6 @@ void mainInsertIntoTables(Database* database, char* command) {
 
     tableWriteOccurence(table, occurence);
     tableInsertOccurence(table, occurence);
-}
-
-Table* mainGetInsertTable(Database * database, char* command) {
-    char* tableName = malloc(sizeof(char) * strlen(command));
-    sscanf(command, "insert into %s values", tableName);
-
-    if (!tableExists(database, tableName)) {
-        free(tableName);
-        return NULL;
-    }
-
-    Table* table = databaseGetTable(database, tableName);
-
-    free(tableName);
-
-    return table;
 }
 
 Occurence* mainGetOccurenceInsertValues(char* command) {
@@ -226,7 +197,7 @@ void mainDeleteFromTable(Database* database, char* command) {
         return;
     }
 
-    Table* table = mainGetDeleteTable(database, command);
+    Table* table = mainGetTableFromCommand(database, command, Delete);
 
     if (table == NULL) {
         printf("Table doesn't exist\n");
@@ -236,27 +207,17 @@ void mainDeleteFromTable(Database* database, char* command) {
     int nbOccurencesRes;
     Occurence** ocs = mainGetOccurencesFromJointures(table, command, &nbOccurencesRes);
 
+    if (ocs == NULL) {
+        return;
+    }
+
     for (int i = 0; i < nbOccurencesRes; i++) {
         tableRemoveOccurence(table, ocs[i]);
     }
 
+    free(ocs);
+
     tableWriteModifications(database, table);
-}
-
-Table* mainGetDeleteTable(Database* database, char* command) {
-    char* tableName = malloc(sizeof(char) * (strlen(command) + 1));
-    sscanf(command, "delete from %s", tableName);
-
-    if (!tableExists(database, tableName)) {
-        free(tableName);
-        return NULL;
-    }
-
-    Table* table = databaseGetTable(database, tableName);
-
-    free(tableName);
-
-    return table;
 }
 
 Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbOccurencesRes) {
@@ -269,8 +230,8 @@ Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbO
         return ocs;
     }
 
-    char* conditionsS = malloc(sizeof(char) * strlen(command));
-    sscanf(command, "delete from %*s where %[^\n]", conditionsS);
+    char* conditionsS = strstr(command, "where");
+    sscanf(conditionsS, "where %[^\n]", conditionsS);
 
     char **conditionsListString = malloc(sizeof(char*) * 10);
     int nbConditions = 0;
@@ -305,11 +266,145 @@ Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbO
 
     int correctConditions = conditionAreCorrects(table, conditions, nbConditions);
 
+    Occurence** ocs = NULL;
+
+    if (correctConditions) {
+        ocs = getAllOccurencesFromConditions(table, conditions, nbConditions, nbOccurencesRes);
+    }
+
+    for (int i = 0; i < nbConditions; i++) {
+        free(conditions[i]);
+        free(conditionsListString[i]);
+    }
+    free(conditionsListString);
+    free(conditions);
+
     if (!correctConditions) {
+        printf("Incorrect conditions\n");
         return NULL;
     }
 
-    Occurence** ocs = getAllOccurencesFromConditions(table, conditions, nbConditions, nbOccurencesRes);
-
     return ocs;
+}
+
+Affectation** mainGetAllAffectationsFromUpdate(Table* table, char* command, int* nbAffectationRes) {
+    char* affectationLine = malloc(sizeof(char) * 1000);
+    char* line = command;
+    line = strstr(line, "set");
+
+    if (line == NULL) {
+        free(affectationLine);
+        return NULL;
+    }
+
+    line = strtok(line, " ");
+    line = strtok(NULL, " ");
+
+    strcpy(affectationLine, "");
+
+    while (line != NULL) {
+        if (strcmp(line, "where") == 0) {
+            break;
+        }
+
+        strcat(affectationLine, line);
+        line = strtok(NULL, " ");
+    }
+
+    *nbAffectationRes = 0;
+    int correctAffectations = 1;
+
+    line = strtok(affectationLine, ",");
+    while (line != NULL) {
+        (*nbAffectationRes)++;
+        if (!affectationIsCorrect(table, line)) {
+            correctAffectations = 0;
+            break;
+        }
+        line = strtok(NULL, ",");
+    }
+
+    Affectation** affectations = NULL;
+
+    if (correctAffectations) {
+        affectations = malloc(sizeof(Affectation) * *nbAffectationRes);
+        line = strtok(affectationLine, ",");
+
+        int i = 0;
+        while (line != NULL) {
+            affectations[i] = affectationGet(line);
+            i++;
+            line = strtok(NULL, ",");
+        }
+    }
+
+    free(affectationLine);
+    free(line);
+
+    return affectations;
+}
+
+void mainUpdateTable(Database* database, char* command) {
+    if (database == NULL) {
+        printf("Database is not open\n");
+        return;
+    }
+
+    Table* table = mainGetTableFromCommand(database, command, Update);
+
+    if (table == NULL) {
+        printf("Table doesn't exist\n");
+        return;
+    }
+
+    int nbAffectationsRes = 0;
+    Affectation** affectations = mainGetAllAffectationsFromUpdate(table, command, &nbAffectationsRes);
+
+    if (affectations == NULL) {
+        printf("Set is not correct\n");
+        return;
+    }
+
+    int nbOccurencesRes = 0;
+    Occurence** occurences = mainGetOccurencesFromJointures(table, command, &nbOccurencesRes);
+
+    if (occurences == NULL) {
+        return;
+    }
+
+    affectationApply(table, occurences, nbOccurencesRes, affectations, nbAffectationsRes);
+    tableWriteModifications(database, table);
+
+    for (int i = 0; i < nbAffectationsRes; i++) {
+        affectationFree(affectations[i]);
+    }
+    free(affectations);
+    free(occurences);
+}
+
+Table* mainGetTableFromCommand(Database* database, char* command, CommandType commandType) {
+    char* tableName = malloc(sizeof(char) * (strlen(command) + 1));
+
+    switch (commandType) {
+        case Insert:
+            sscanf(command, "insert into %s values", tableName);
+            break;
+        case Delete:
+            sscanf(command, "delete from %s", tableName);
+            break;
+        case Update:
+            sscanf(command, "update %s", tableName);
+            break;
+    }
+
+    if (!tableExists(database, tableName)) {
+        free(tableName);
+        return NULL;
+    }
+
+    Table* table = databaseGetTable(database, tableName);
+
+    free(tableName);
+
+    return table;
 }

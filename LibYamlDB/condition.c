@@ -2,20 +2,10 @@
 #include <string.h>
 #include "condition.h"
 
-/*Condition* conditionNew(char* attribut, ConditionType type, char* value) {
-    Condition* condition = malloc(sizeof(Condition));
-
-    condition->attribut = attribut;
-    condition->type = type;
-    condition->value = value;
-
-    return condition;
-}*/
-
 Condition* conditionGet(char* line) {
-    char* attribut = strdup(strtok(line, " "));
-    char* type = strdup(strtok(NULL, " "));
-    char* value = strdup(strtok(NULL, ""));
+    char* attribut = strtok(line, " ");
+    char* type = strtok(NULL, " ");
+    char* value = strtok(NULL, " ");
 
     Condition* c = malloc(sizeof(Condition));
     c->attribut = attribut;
@@ -53,57 +43,81 @@ int conditionAreCorrects(Table* table, Condition** conditions, int nbConditions)
 
 Occurence** getAllOccurencesFromConditions(Table* table, Condition** conditions, int nbConditions, int* nbOccurencesRes) {
     Occurence** occurences = malloc(sizeof(Occurence) * table->lengthOccurences);
-    int index = 0;
+    int* indexes = malloc(sizeof(int) * nbConditions);
 
-    for (int i = 0; i < table->lengthAttributes; i++) {
-        if (strcmp(table->attributes[i]->name, conditions[0]->attribut) == 0) {
-            index = i;
-            break;
+    for (int c = 0; c < nbConditions; c++) {
+        for (int i = 0; i < table->lengthAttributes; i++) {
+            if (strcmp(table->attributes[i]->name, conditions[c]->attribut) == 0) {
+                indexes[c] = i;
+                break;
+            }
         }
     }
 
     *nbOccurencesRes = 0;
 
     for (int o = 0; o < table->lengthOccurences; o++) {
-        switch (conditions[0]->type) {
-            case Equal:
-                if (strcmp(table->occurences[o]->values[index]->value, conditions[0]->value) == 0) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
+        int correct = 1;
+
+        for (int c = 0; c < nbConditions; c++) {
+            switch (conditions[c]->type) {
+                case Equal:
+                    if (strcmp(table->occurences[o]->values[indexes[c]]->value, conditions[c]->value) == 0) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+                case NotEqual:
+                    if (strcmp(table->occurences[o]->values[indexes[c]]->value, conditions[c]->value) != 0) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+                case Greater:
+                    if (atof(table->occurences[o]->values[indexes[c]]->value) > atof(conditions[c]->value)) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+                case Less:
+                    if (atof(table->occurences[o]->values[indexes[c]]->value) < atof(conditions[c]->value)) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+                case GreaterEqual:
+                    if (atof(table->occurences[o]->values[indexes[c]]->value) >= atof(conditions[c]->value)) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+                case LessEqual:
+                    if (atof(table->occurences[o]->values[indexes[c]]->value) <= atof(conditions[c]->value)) {}
+                    else {
+                        correct = 0;
+                        break;
+                    }
+                    break;
+            }
+
+            if (!correct) {
                 break;
-            case NotEqual:
-                if (strcmp(table->occurences[o]->values[index]->value, conditions[0]->value) != 0) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
-                break;
-            case Greater:
-                if (atof(table->occurences[o]->values[index]->value) > atof(conditions[0]->value)) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
-                break;
-            case Less:
-                if (atof(table->occurences[o]->values[index]->value) < atof(conditions[0]->value)) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
-                break;
-            case GreaterEqual:
-                if (atof(table->occurences[o]->values[index]->value) >= atof(conditions[0]->value)) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
-                break;
-            case LessEqual:
-                if (atof(table->occurences[o]->values[index]->value) <= atof(conditions[0]->value)) {
-                    occurences[*nbOccurencesRes] = table->occurences[o];
-                    (*nbOccurencesRes)++;
-                }
-                break;
+            }
+
+        }
+
+        if (correct) {
+            occurences[*nbOccurencesRes] = table->occurences[o];
+            (*nbOccurencesRes)++;
         }
     }
+
+    free(indexes);
 
     return occurences;
 }

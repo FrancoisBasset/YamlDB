@@ -11,26 +11,6 @@ CommandType getCommandType(char* command) {
     char* firstWord = strtok(copy, " ");
     char* secondWord = strtok(NULL, " ");
 
-    if (strcmp(firstWord, "create") == 0) {
-        if (strcmp(secondWord, "database") == 0) {
-            type = CreateDatabase;
-        }
-
-        if (strcmp(secondWord, "table") == 0) {
-            type = CreateTable;
-        }
-    }
-
-    if (strcmp(firstWord, "drop") == 0) {
-        if (strcmp(secondWord, "database") == 0) {
-            type = DropDatabase;
-        }
-
-        if (strcmp(secondWord, "table") == 0) {
-            type = DropTable;
-        }
-    }
-
     if (strcmp(firstWord, "use") == 0) {
         type = Use;
     }
