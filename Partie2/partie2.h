@@ -30,4 +30,7 @@ Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbO
 void mainUpdateTable(Database* database, char* command);
 Table* mainGetTableFromCommand(Database* database, char* command, CommandType commandType);
 
+void mainSelectFrom(Database* database, char* command);
+char** mainGetSelectAttributes(Table* table, char* command, int* nbSelectors);
+
 #endif

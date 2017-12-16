@@ -26,7 +26,7 @@ void launch() {
                 database = mainUseDatabase(database, command);
                 break;
             case Select:
-                printf("Select\n");
+                mainSelectFrom(database, command);
                 break;
             case Insert:
                 mainInsertIntoTables(database, command);
@@ -93,10 +93,6 @@ void mainShowTables(Database* database) {
         printf("%s\n", database->tables[i]->name);
     }
 }
-
-/*Database* mainCreateDatabase(char* command) {
-
-}*/
 
 Database* mainUseDatabase(Database* database, char* command) {
     char* tmp = strtok(command, " ");
@@ -289,7 +285,7 @@ Occurence** mainGetOccurencesFromJointures(Table* table, char* command, int* nbO
 
 Affectation** mainGetAllAffectationsFromUpdate(Table* table, char* command, int* nbAffectationRes) {
     char* affectationLine = malloc(sizeof(char) * 1000);
-    char* line = command;
+    char* line = strdup(command);
     line = strstr(line, "set");
 
     if (line == NULL) {
@@ -395,6 +391,10 @@ Table* mainGetTableFromCommand(Database* database, char* command, CommandType co
         case Update:
             sscanf(command, "update %s", tableName);
             break;
+        case Select:
+            tableName = strdup(strstr(command, "from"));
+            sscanf(tableName, "from %s", tableName);
+            break;
     }
 
     if (!tableExists(database, tableName)) {
@@ -407,4 +407,81 @@ Table* mainGetTableFromCommand(Database* database, char* command, CommandType co
     free(tableName);
 
     return table;
+}
+
+void mainSelectFrom(Database* database, char* command) {
+    if (database == NULL) {
+        printf("Database is not open\n");
+        return;
+    }
+
+    Table* table = mainGetTableFromCommand(database, command, Select);
+
+    if (table == NULL) {
+        printf("Table doesn't exist");
+        return;
+    }
+
+    int nbOccurencesRes = 0;
+    Occurence** occurences = mainGetOccurencesFromJointures(table, command, &nbOccurencesRes);
+
+    if (occurences == NULL) {
+        return;
+    }
+
+    int nbSelectors = 0;
+    char** selectors = mainGetSelectAttributes(table, command, &nbSelectors);
+
+    for (int i = 0; i < nbSelectors; i++) {
+        for (int j = 0; j < table->lengthAttributes; j++) {
+            if (strcmp(selectors[i], table->attributes[j]->name) == 0) {
+                printf("%20s", table->attributes[j]->name);
+                break;
+            }
+        }
+    }
+    printf("\n\n");
+
+    for (int o = 0; o < nbOccurencesRes; o++) {
+        for (int v = 0; v < occurences[o]->length; v++) {
+            for(int s = 0; s < nbSelectors; s++) {
+                if (strcmp(table->attributes[v]->name, selectors[s]) == 0) {
+                    printf("%20s", occurences[o]->values[v]->value);
+                    break;
+                }
+            }
+        }
+        printf("\n");
+    }
+}
+
+char** mainGetSelectAttributes(Table* table, char* command, int* nbSelectors) {
+    char* selectors = strdup(command);
+    sscanf(selectors, "select %[^\n] from %*s", selectors);
+
+    printf("|%s|\n", selectors);
+
+    if (strcmp(selectors, "*") == 0) {
+        char** result = malloc(sizeof(char*) * table->lengthAttributes);
+        for (int i = 0; i < table->lengthAttributes; i++) {
+            result[i] = table->attributes[i]->name;
+        }
+        *nbSelectors = table->lengthAttributes;
+        return result;
+    }
+
+    char** result = malloc(sizeof(char*) * table->lengthAttributes);
+    char* selector = strtok(selectors, ", ");
+
+    *nbSelectors = 0;
+    int i = 0;
+    while (selector != NULL) {
+        result[i] = strdup(selector);
+        printf("%s - %d\n", result[i], i);
+        selector = strtok(NULL, ", ");
+        (*nbSelectors)++;
+        i++;
+    }
+
+    return result;
 }
