@@ -47,7 +47,9 @@ void launch() {
                 mainDescribeTable(database, command);
                 break;
             case Help:
-                printf("Help\n");
+                printf("Commands:\n");
+                printf("use <database>\nshow databases\nshow tables\ndescribe <table>\nupdate <table> set <affectation> where <conditions>\n");
+                printf("delete from <table> where <conditions>\nselect <attributes> where <conditions>\nhelp\nexit");
                 break;
             case Exit:
                 printf("Bye\n");
@@ -457,9 +459,7 @@ void mainSelectFrom(Database* database, char* command) {
 
 char** mainGetSelectAttributes(Table* table, char* command, int* nbSelectors) {
     char* selectors = strdup(command);
-    sscanf(selectors, "select %[^\n] from %*s", selectors);
-
-    printf("|%s|\n", selectors);
+    sscanf(selectors, "select %s from %*s", selectors);
 
     if (strcmp(selectors, "*") == 0) {
         char** result = malloc(sizeof(char*) * table->lengthAttributes);
@@ -477,7 +477,6 @@ char** mainGetSelectAttributes(Table* table, char* command, int* nbSelectors) {
     int i = 0;
     while (selector != NULL) {
         result[i] = strdup(selector);
-        printf("%s - %d\n", result[i], i);
         selector = strtok(NULL, ", ");
         (*nbSelectors)++;
         i++;
